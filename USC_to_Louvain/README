@@ -1,0 +1,3 @@
+./Reformat <inputfile> <outputfile>
+inputfile is a binary file containing a graph in CSR format
+outputfile is an ASCII file containig the same graph in edge-list format 
