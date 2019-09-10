@@ -1,4 +1,5 @@
 // File: graph.cpp
+// //
 // -- simple graph handling source file
 //-----------------------------------------------------------------------------
 // Community detection
