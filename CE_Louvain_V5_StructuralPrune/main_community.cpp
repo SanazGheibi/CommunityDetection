@@ -32,8 +32,8 @@
 #define W 41943040
 //#define W 200
 
-//#define T 10
-#define T 3 
+#define T 10
+//#define T 3 
 
 using namespace std;
 
