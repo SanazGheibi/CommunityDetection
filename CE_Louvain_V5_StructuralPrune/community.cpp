@@ -112,6 +112,8 @@ Community::prune_graph(int T){
   g2.nb_links = g.nb_links;
   g2.total_weight = g.total_weight;
   g2.degrees.resize(g.nb_nodes); //g.nb_nodes = size 
+  g2.links.resize(g.nb_links, -1); //some space will be wasted, but the will be fixed in transform()
+  int link_index = 0; 
   
   g2.degrees[0] = 0; 
   //now the pruning starts:
@@ -131,7 +133,8 @@ Community::prune_graph(int T){
            if(neigh_deg > T){
               neigh = renumber[neigh];
               g2.degrees[index]++;
-              g2.links.push_back(neigh);
+              g2.links[link_index] = neigh;
+	      link_index++;
               if(g.weights.size()!=0)
                  g2.weights.push_back(weight); 
            }else{
@@ -151,7 +154,8 @@ Community::prune_graph(int T){
       pair<vector<unsigned int>::iterator, vector<float>::iterator> p = g.neighbors(node);
       for (int i=0 ; i<deg ; i++) {
            int neigh = renumber[*(p.first+i)];
-           g2.links.push_back(neigh);
+           g2.links[link_index] = neigh;
+	   link_index++;
            if(g.weights.size()!=0)
               g2.weights.push_back(*(p.second+i)); 
       } 
@@ -531,9 +535,10 @@ Community::transform(long W){
   g2.nb_links = g.nb_links;
   g2.total_weight = g.total_weight;
   g2.degrees.resize(g.nb_nodes); //g.nb_nodes = size 
+  g2.links.resize(g.nb_links); //number of links should not change in ABFS preordering
 
   //g2.weights.resize(g.weights.size()); --> the cause of a bug
-  
+  int link_index = 0;
   for(int index=0; index<total_size; index++){
       int node = order[index];
       int deg = g.nb_neighbors(node);
@@ -541,7 +546,8 @@ Community::transform(long W){
       pair<vector<unsigned int>::iterator, vector<float>::iterator> p = g.neighbors(node);
       for(int i=0; i<deg; i++){
 	  int neigh = *(p.first+i);
-	  g2.links.push_back(reverse_map[neigh]);
+	  g2.links[link_index] = reverse_map[neigh];
+	  link_index++;
           if(g.weights.size()!=0)
              g2.weights.push_back(*(p.second+i)); 
       }      
