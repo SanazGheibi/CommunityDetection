@@ -1,5 +1,5 @@
 #!/bin/bash
-name="IMDB"
+name="liveJournal"
 ./RandomShuffle/RSH ./Data/"${name}.txt" > "./RandomShuffle/${name}_log.txt"
 ./Louvain_updated/convert -i ./Data/"${name}_RSH.txt" -o ~/Louvain_input/"RandomShuffle_${name}.bin" -r > "./Louvain_updated/${name}0_log.txt"
 rm ./Data/"${name}.txt"
