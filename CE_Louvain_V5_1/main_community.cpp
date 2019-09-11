@@ -118,8 +118,8 @@ main(int argc, char **argv) {
   srand(time(NULL)+getpid());
 
   parse_args(argc, argv);
-  time_t time_begin, time_end;
-  time(&time_begin);
+  clock_t time_begin, time_end;
+  time_begin = clock();
   if (verbose)
     display_time("Begin");
 
@@ -162,10 +162,10 @@ main(int argc, char **argv) {
       improvement=true;
   } while(improvement);
 
-  time(&time_end);
+  time_end = clock();
   if (verbose) {
     display_time("End");
-    cerr << "Total duration: " << (time_end-time_begin) << " sec." << endl;
+    cerr << "Total duration: " << (double)(time_end-time_begin)/CLOCKS_PER_SEC << " sec." << endl;
   }
   cerr << new_mod << endl;
 }
