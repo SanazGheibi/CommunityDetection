@@ -121,8 +121,8 @@ main(int argc, char **argv) {
   srand(time(NULL)+getpid());
   parse_args(argc, argv);
 
-  time_t time_begin1, time_end1, time_begin2, time_end2;
-  time(&time_begin1);
+  clock_t time_begin1, time_end1, time_begin2, time_end2;
+  time_begin1 = clock();
   if (verbose)
     display_time("Begin");
 
@@ -131,14 +131,14 @@ main(int argc, char **argv) {
   if (filename_part!=NULL)
     c.init_partition(filename_part);
 
-  time(&time_end1);
+  time_end1 = clock();
 
   //sanaz: can't put it inside constructor. What if there is an initial partition?!
-  time_t time_begin3, time_end3;
-  time(&time_begin3);
+  clock_t time_begin3, time_end3;
+  time_begin3 = clock();
   c.prune_graph(T);
-  time(&time_end3);
-  cerr << "pruning time: " << (time_end3-time_begin3) << " sec." << endl;
+  time_end3 = clock();
+  cerr << "pruning time: " << (double)(time_end3-time_begin3)/CLOCKS_PER_SEC << " sec." << endl;
 
   //sanaz:
   clock_t preOrder_begin, preOrder_end;
@@ -148,7 +148,7 @@ main(int argc, char **argv) {
   cerr << "pre_ordering time: " << (double)(preOrder_end-preOrder_begin)/CLOCKS_PER_SEC << endl;
 
 
-  time(&time_begin2);
+  time_begin2 = clock();
   Graph g;
   bool improvement=true;
   double mod=c.modularity(), new_mod;
@@ -187,10 +187,10 @@ main(int argc, char **argv) {
       improvement=true;
   } while(improvement);
 
-  time(&time_end2);
+  time_end2 = clock();
   if (verbose) {
     display_time("End");
-    cerr << "Total duration: " << ((time_end2-time_begin2)+(time_end1-time_begin1)) << " sec." << endl;
+    cerr << "Total duration: " << (double)((time_end2-time_begin2)+(time_end1-time_begin1))/CLOCKS_PER_SEC << " sec." << endl;
   }
   cerr << new_mod << endl;
 }
