@@ -112,6 +112,7 @@ class Community {
   bool singleFullSweep();
   void bucketSort(vector<int>::iterator first, vector<int>::iterator last, bool ascending);
   void miniBatch_assign(long W); //build the vector "miniBatch" for each level
+  long update_sum(int curr, int* max_deg, long sum);
 };
 
 inline void
