@@ -245,6 +245,20 @@ Community::bucketSort(vector<int>::iterator first, vector<int>::iterator last, b
 
 }
 //--------------------------------------------------------------------------------------------------------------------------
+//sanaz: modulize the update_sum routine (for checking whether or not a node fits into W)
+long
+Community::update_sum(int curr, int* max_deg, long sum){
+      int deg = g.nb_neighbors(curr);
+      int diff = 0; 
+      if(deg > *max_deg){
+         diff = deg - *max_deg;
+         *max_deg = deg; 
+       }
+       long tmp = sizeof(int) + sizeof(unsigned long) + deg * (sizeof(unsigned int) + sizeof(float)); //Accounting for n2c, g.degrees[], g.links[] and g.weights[]
+       sum += tmp + diff * (sizeof(double)+sizeof(unsigned int));
+       return sum; 
+}
+//--------------------------------------------------------------------------------------------------------------------------
 //sanaz: function added by me. ABFS: Adaptive BFS. Unlike cm, here nodes are sorted in decreasing order of their degrees
 void
 Community::ABFS_preorder(vector<int>& retorder, long W){
@@ -269,27 +283,29 @@ Community::ABFS_preorder(vector<int>& retorder, long W){
 
    int start = 0;
    int num = 0; //index is inclusive
-   int k=0; 
-   bool middleStart = false; //indicates if a new node has been pushed into the empty queue in the middle of a mini-batch
+   int k=0;
    int batchID = 0;
+   long sum_tmp = 0; 
 
    while(k<size){ 
-      batchID++;
+
       //this outer loop is processed only when the queue is empty
       if(done[initOrder[k]] == 1){
          k++;
          continue;
       }
+      batchID++;
       
       BFS.push(initOrder[k]); //this will be the start point for the current mini-batch
       start = initOrder[k];
       enqued[initOrder[k]] = batchID;
-
-      k++; //the first node in a mini-batch will definitely be processed 
-      num = 0; 
+      num = 1;
+ 
       long sum = 0; 
       int max_deg = 0; //neigh_weight[] and neigh_pos[] are used for a single node at each time
-      int diff = 0; 
+      //at any moment, sum shows the total cache  usage of the current elements inside the BFS queue  
+      sum = update_sum(initOrder[k], &max_deg, sum);
+      k++; //the first node in a mini-batch will definitely be processed
 
       while(sum < W){
 
@@ -298,75 +314,64 @@ Community::ABFS_preorder(vector<int>& retorder, long W){
                     k++;
               if(k == size)
                  break;
+              sum_tmp = update_sum(initOrder[k], &max_deg, sum);
+              if(sum_tmp >= W)
+		 break;
               BFS.push(initOrder[k]);
               enqued[initOrder[k]] = batchID;
-              k++;
-              middleStart = true; //current node pushed into an empty queue at the middle of a mini-batch
-           }
+              sum = sum_tmp;
+              k++; 
+	      num++;
+          }
 
-           int curr = BFS.front();
- 
-           //if it is negative: its abs shows the number of childern that follow (and have to be sorted)
-           if(curr < 0){
-             BFS.pop(); //similar to pop() in case of a queue
-             curr = -curr;
-             //sorting the "curr" following elements in decreasing order of their degrees
-             /*sort(BFS.begin(), BFS.begin()+curr, [&](const int& a, const int& b)->bool{
-                    if(g.nb_neighbors(a)>g.nb_neighbors(b))
-                        return true;
-                    else
-                        return false;
-             });*/
-
-             curr = BFS.front();
-           }           
-           int deg = g.nb_neighbors(curr);
-           diff = 0; 
-	   if(deg > max_deg){
-	      diff = deg - max_deg;
-	      max_deg = deg; 
-	   }
-	   long tmp = sizeof(int) + sizeof(unsigned long) + deg * (sizeof(unsigned int) + sizeof(float)); //Accounting for n2c, g.degrees[], g.links[] and g.weights[]
-	   if(sum + tmp + diff *(long)(sizeof(double)+sizeof(unsigned int)) >= W){
-                //curr dosn't fit
-                if(num == 0){
-                   done[curr] = 1; //a singleton: should be included in this mini-batch
-                   retorder.push_back(curr);
-                   num++;
-                }
-                if(middleStart)
-                   k--;
-		BFS.flush();
-		break;
-           }
-	   sum += tmp + diff * (sizeof(double)+sizeof(unsigned int));
-           middleStart = false;
+           int curr = BFS.front();         
            done[curr] = 1;
            retorder.push_back(curr); //define the order only after the node has been used
-           num++; 
 
            //insert the neighbors and remove curr from the queue
+           int deg = g.nb_neighbors(curr);
            pair<vector<unsigned int>::iterator, vector<float>::iterator> p = g.neighbors(curr);
-           vector<int> children;
+           vector<int> children(deg,-1);
           
            int ch_num = 0; 
            for (int i=0 ; i<deg ; i++) {
                 int neigh = *(p.first+i); 
                 if(enqued[neigh] != batchID && done[neigh] == 0){
-                   ch_num++;
-                   children.push_back(neigh);
+                   children[ch_num] = neigh;
+		   ch_num++;
                 }
            }
-
            if(ch_num > 0)
-              BFS.push(-ch_num);
-
+              sort(children.begin(), children.begin()+ch_num, [&](const int& a, const int& b)->bool{
+                    if(g.nb_neighbors(a)>g.nb_neighbors(b))
+                        return true;
+                    else
+                        return false;
+             });
+	   bool stop = false;
            for (int i=0 ; i < ch_num ; i++) {
                 int neigh = children[i];
+                sum_tmp = update_sum(neigh, &max_deg, sum);
+                if(sum_tmp >= W){
+		  stop = true;
+		  BFS.pop(); //to account for the current element
+                  while(!BFS.empty()){
+			curr = BFS.front();
+			done[curr] = 1;
+			retorder.push_back(curr);
+			BFS.pop();
+ 		  }
+		  break;
+                }
                 enqued[neigh] = batchID;
                 BFS.push(neigh);
-           }  
-           BFS.pop(); 
+                sum = sum_tmp;
+		num++;
+           }
+	   
+	   if(stop)
+		break;
+           BFS.pop();
       }
       //set num
       miniBatch[start] = num; 
@@ -571,7 +576,7 @@ Community::one_level(int W, bool level0) {
   //   or there is an improvement of modularity greater than a given epsilon 
   //   or a predefined number of pass have been done
 
-  //sanaz:the do-while loop is added by me 
+  //sanaz:the do-while loop is added by me
   arrayQueue<int> Q(max_batchSize);
   int* insider = new int[size];
   do{
