@@ -286,6 +286,8 @@ Community::ABFS_preorder(vector<int>& retorder, long W){
    int k=0;
    int batchID = 0;
    long sum_tmp = 0; 
+   vector<int> tmp_order(W/sizeof(int)); 
+   int order_index;
 
    while(k<size){ 
 
@@ -296,16 +298,11 @@ Community::ABFS_preorder(vector<int>& retorder, long W){
       }
       batchID++;
       
-      BFS.push(initOrder[k]); //this will be the start point for the current mini-batch
-      start = initOrder[k];
-      enqued[initOrder[k]] = batchID;
-      num = 1;
- 
+      num = 0; 
+      order_index = 0; //gets updated after each insertion into tmp_order
+
       long sum = 0; 
       int max_deg = 0; //neigh_weight[] and neigh_pos[] are used for a single node at each time
-      //at any moment, sum shows the total cache  usage of the current elements inside the BFS queue  
-      sum = update_sum(initOrder[k], &max_deg, sum);
-      k++; //the first node in a mini-batch will definitely be processed
 
       while(sum < W){
 
@@ -315,8 +312,17 @@ Community::ABFS_preorder(vector<int>& retorder, long W){
               if(k == size)
                  break;
               sum_tmp = update_sum(initOrder[k], &max_deg, sum);
-              if(sum_tmp >= W)
+              if(sum_tmp >= W){
+		 if(num == 0){
+		    //this is a singleton node group
+		    done[initOrder[k]] = 1;
+		    tmp_order[0] = initOrder[k];
+		    order_index = 1;
+		    k++;
+		    num = 1;
+		 }
 		 break;
+	      }
               BFS.push(initOrder[k]);
               enqued[initOrder[k]] = batchID;
               sum = sum_tmp;
@@ -326,7 +332,8 @@ Community::ABFS_preorder(vector<int>& retorder, long W){
 
            int curr = BFS.front();         
            done[curr] = 1;
-           retorder.push_back(curr); //define the order only after the node has been used
+           tmp_order[order_index] = curr; //define the order only after the node has been used
+	   order_index++;
 
            //insert the neighbors and remove curr from the queue
            int deg = g.nb_neighbors(curr);
@@ -358,7 +365,8 @@ Community::ABFS_preorder(vector<int>& retorder, long W){
                   while(!BFS.empty()){
 			curr = BFS.front();
 			done[curr] = 1;
-			retorder.push_back(curr);
+			tmp_order[order_index] = curr;
+			order_index++;
 			BFS.pop();
  		  }
 		  break;
@@ -373,12 +381,18 @@ Community::ABFS_preorder(vector<int>& retorder, long W){
 		break;
            BFS.pop();
       }
+
+      start = tmp_order[order_index-1];
+      for(int i=order_index-1; i>=0; i--){
+	  retorder.push_back(tmp_order[i]);
+      }
+
       //set num
       miniBatch[start] = num; 
       if(num > max_batchSize)
          max_batchSize = num;
    }
-
+    
    return;
 }
 //..........................................................................................................................................................................
