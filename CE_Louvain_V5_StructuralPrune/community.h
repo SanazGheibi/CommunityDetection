@@ -118,6 +118,7 @@ class Community {
   Graph partition2graph_binary_l0();
   unsigned int neigh_comm_low(unsigned int node);
   void prune_graph(int T);
+  long update_sum(int curr, int* max_deg, long sum);
 };
 
 inline void
