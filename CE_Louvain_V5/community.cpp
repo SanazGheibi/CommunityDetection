@@ -275,7 +275,8 @@ Community::ABFS_preorder(vector<int>& retorder, long W){
    //at this stage, only consider nodes with degrees > 1 
    int* done = new int[size]; //keeps track of nodes entered into cache (fully processed)
    int* enqued = new int[size]; //keeps track of nodes currently in the queue
-   arrayQueue<int> BFS(W/sizeof(int)); //changed the type from queue to vector, so that the elements can be sorted in place 
+   long init_size = min((W/(long)sizeof(int)), (long)size);
+   arrayQueue<int> BFS(init_size); 
    for(int i=0; i<size; i++)
        done[i] = 0;
    for(int i=0; i<size; i++)
@@ -286,8 +287,9 @@ Community::ABFS_preorder(vector<int>& retorder, long W){
    int k=0;
    int batchID = 0;
    long sum_tmp = 0; 
-   vector<int> tmp_order(W/sizeof(int)); 
+   vector<int> tmp_order(init_size); 
    int order_index;
+   int final_index = 0; 
 
    while(k<size){ 
 
@@ -384,7 +386,12 @@ Community::ABFS_preorder(vector<int>& retorder, long W){
 
       start = tmp_order[order_index-1];
       for(int i=order_index-1; i>=0; i--){
-	  retorder.push_back(tmp_order[i]);
+	  if(final_index >= size){
+     		cerr << "order.size() > graph size" << endl;
+     		exit (EXIT_FAILURE);		
+	  }
+	  retorder[final_index] = tmp_order[i];
+	  final_index++;
       }
 
       //set num
@@ -400,10 +407,10 @@ Community::ABFS_preorder(vector<int>& retorder, long W){
 void
 Community::transform(long W){
   //maps new indices to old indices
-  vector<int> order;
+  vector<int> order(size, -1);
   ABFS_preorder(order, W);
 
-  if(order.size() != (unsigned int) size){
+  if(order[size-1] == -1){
      cerr << "order.size() != graph size" << endl;
      exit (EXIT_FAILURE);
   }
