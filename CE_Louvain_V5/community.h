@@ -25,6 +25,7 @@
 #include <vector>
 #include <map>
 #include <queue>
+#include<algorithm>
 
 #include "graph_binary.h"
 #include "arrayQueue.h"
