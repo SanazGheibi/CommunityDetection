@@ -58,6 +58,10 @@ In this specific case, the convertion step must also use the -w option.
 The program can also start with any given partition using -p option
 ./community graph.bin -p graph.part -v
 
+A new option -c is added by Sanaz: it defines the size of the last level 
+cache in MB (default is 1):
+./community graph.bin -c 4 -l -1 -v -q 0.0001 > graph.tree
+
 
 3. Displays information on the tree structure (number of hierarchical
 levels and nodes per level):
