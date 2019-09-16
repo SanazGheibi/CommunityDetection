@@ -170,10 +170,11 @@ main(int argc, char **argv) {
       g.display();
     if (display_level==-1)
       c.display_partition();
-    if(level == 0)
+    if((level-1) == 0) //level has already been updated
     	g = c.partition2graph_binary_l0();
     else
         g = c.partition2graph_binary();
+
     c = Community(g, -1, precision);
 
     if (verbose)
