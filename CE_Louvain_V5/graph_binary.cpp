@@ -162,6 +162,7 @@ Graph::display_binary(char *outfile) {
   foutput.open(outfile ,fstream::out | fstream::binary);
 
   foutput.write((char *)(&nb_nodes),4);
-  foutput.write((char *)(&degrees[0]),4*nb_nodes);
+  //sanaz: a fix, it used to write 4 bytes, but read 8 bytes in constructor
+  foutput.write((char *)(&degrees[0]),8*nb_nodes);
   foutput.write((char *)(&links[0]),8*nb_links);
 }
