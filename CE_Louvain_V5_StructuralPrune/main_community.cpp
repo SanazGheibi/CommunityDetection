@@ -28,8 +28,6 @@
 #include "graph_binary.h"
 #include "community.h"
 
-//#define W  1048576
-//#define W 41943040
 //#define W 200
 
 //#define T 10
@@ -45,6 +43,9 @@ int nb_pass    = 0;
 double precision = 0.000001;
 int display_level = -2;
 int k1 = 16;
+//sanaz:
+char *reorder_file = NULL;
+int boundary = 0;
 
 bool verbose = false;
 
@@ -104,6 +105,14 @@ parse_args(int argc, char **argv) {
 	coef = atoi(argv[i+1]);
 	i++;
 	break;
+      case 'r': //sanaz: the re-ordered graph should be written out and be used in next iterations
+	reorder_file = argv[i+1];
+	i++;
+      break;
+      case 'b': //sanaz: the boundary value, used in iterations > 1
+	boundary = atoi(argv[i+1]);
+	i++;
+      break;
       default:
 	usage(argv[0], "Unknown option\n");
       }
@@ -130,31 +139,45 @@ main(int argc, char **argv) {
 
   parse_args(argc, argv);
   W = coef * W; 
+  if(filename_part != NULL && boundary == 0){
+     cerr << "Error: for iteration > 1, boundary value is needed" << endl;
+     exit(EXIT_FAILURE);
+  }
+
   clock_t time_begin1, time_end1, time_begin2, time_end2;
   time_begin1 = clock();
   if (verbose)
     display_time("Begin");
 
-  Community c(filename, filename_w, type, -1, precision);
-
+  Community c(filename, filename_w, type, -1, precision, boundary);	
+            
   if (filename_part!=NULL)
     c.init_partition(filename_part);
 
   time_end1 = clock();
 
-  //sanaz: can't put it inside constructor. What if there is an initial partition?!
-  clock_t time_begin3, time_end3;
-  time_begin3 = clock();
-  c.prune_graph(T);
-  time_end3 = clock();
-  cerr << "pruning time: " << (double)(time_end3-time_begin3)/CLOCKS_PER_SEC << " sec." << endl;
+  //sanaz: run ABFS preodering and pruning only in the begining of an iterative approach
+  if (filename_part == NULL){  
+	  //sanaz: can't put it inside constructor. There may exist initial partitions. 
+	  clock_t time_begin3, time_end3;
+	  time_begin3 = clock();
+	  c.prune_graph(T);
+	  time_end3 = clock();
+	  cerr << "pruning time: " << (double)(time_end3-time_begin3)/CLOCKS_PER_SEC << " sec." << endl;
 
-  //sanaz:
-  clock_t preOrder_begin, preOrder_end;
-  preOrder_begin=clock();
-  c.transform(W);
-  preOrder_end=clock();
-  cerr << "pre_ordering time: " << (double)(preOrder_end-preOrder_begin)/CLOCKS_PER_SEC << endl;
+	  //sanaz:
+	  clock_t preOrder_begin, preOrder_end;
+	  preOrder_begin=clock();
+	  c.transform(W);
+	  preOrder_end=clock();
+	  cerr << "pre_ordering time: " << (double)(preOrder_end-preOrder_begin)/CLOCKS_PER_SEC << endl;
+          //sanaz: in order for the iterative method to work correctly, we should produced a new .bin file based 
+	  //on the transformed graph
+	  if(reorder_file != NULL)
+	  	c.g.display_binary(reorder_file);
+  }
+  //To be used in later iterations and in the corresponding script
+  cerr << "boundary: " << c.boundary << endl;
 
 
   time_begin2 = clock();
@@ -172,8 +195,12 @@ main(int argc, char **argv) {
 	   << c.g.nb_links << " links, "
 	   << c.g.total_weight << " weight." << endl;
     }
-
-    improvement = c.one_level(W, level==0);
+    //sanaz: in iterations with initial community assignments, "transform()" is not called
+    //therefore, "miniBatch_assign()" should be called anyway
+    bool level0 = (level == 0);
+    if(filename_part!=NULL)
+	level0 = false;
+    improvement = c.one_level(W, level0);
     new_mod = c.modularity();
     if (++level==display_level)
       g.display();
@@ -200,8 +227,13 @@ main(int argc, char **argv) {
   time_end2 = clock();
   if (verbose) {
     display_time("End");
-    cerr << "Total duration: " << (double)((time_end2-time_begin2)+(time_end1-time_begin1))/CLOCKS_PER_SEC << " sec." << endl;
   }
+  //modified by sanaz: show the total duration regardless of being verbose or not
+  cerr << "Total duration: " << (double)((time_end2-time_begin2)+(time_end1-time_begin1))/CLOCKS_PER_SEC << " sec." << endl;
+
+  //sanaz: information printed out will be used in later iterations (and in the corresponding script)
+  cerr << "lastLevel: " << (level-1) << endl;
+
   cerr << new_mod << endl;
 }
 
