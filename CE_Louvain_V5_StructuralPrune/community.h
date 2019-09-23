@@ -61,8 +61,8 @@ class Community {
 
   // constructors:
   // reads graph from file using graph constructor
-  // type defined the weighted/unweighted status of the graph file
-  Community (char *filename, char *filename_w, int type, int nb_pass, double min_modularity);
+  // type defined the weighted/unweighted status of the graph file. "input_boundary" added by sanaz
+  Community (char *filename, char *filename_w, int type, int nb_pass, double min_modularity, int input_boundary);
   // copy graph
   Community (Graph g, int nb_pass, double min_modularity);
 
