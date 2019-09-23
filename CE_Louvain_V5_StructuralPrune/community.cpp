@@ -19,8 +19,8 @@
 
 using namespace std;
 
-Community::Community(char * filename, char * filename_w, int type, int nbp, double minm) {
-  //Sanaz: this is the constructor which is called initially (before ABFS_preodering); 
+Community::Community(char * filename, char * filename_w, int type, int nbp, double minm, int input_boundary) {
+  //Sanaz: this is the constructor which is called initially (before prune & ABFS_preodering); 
   //max_degree is therefore computed here
   g = Graph(filename, filename_w, type);
   size = g.nb_nodes; //size shows nodes upto what index are valid - all the nodes before prune
@@ -36,16 +36,27 @@ Community::Community(char * filename, char * filename_w, int type, int nbp, doub
   max_degree = 0; //to be used for the bucketSort function
   total_size = size; 
   boundary = size; //boundary shows starting from which are the nodes pruned out - no nodes before prune
-
+  
   //sanaz: the following varaibles will be further initialized inside the prune_graph() function
   //for now, we don't keep the degree information intact 
   n2c.resize(size, -1);
   in.resize(size, -1);
   tot.resize(size, -1);
-  max_degree = 0; 
-
+  max_degree = 0; //used for bucket sort which is used in ABFS preordering
+  
   nb_pass = nbp;
   min_modularity = minm;
+  
+  //sanaz: for iterations where we don't prune the graph and just input the boundary value
+  if(input_boundary != 0){
+     for (int i=0 ; i<size ; i++) {
+	n2c[i] = i;
+	in[i]  = g.nb_selfloops(i);
+	tot[i] = g.weighted_degree(i);
+     }
+     boundary = input_boundary;
+     size = boundary; 
+  }
 
 }
 
@@ -633,17 +644,17 @@ Community::partition2graph() {
 
 void
 Community::display_partition() {
-  vector<int> renumber(size, -1);
-  for (int node=0 ; node<size ; node++) {
+  vector<int> renumber(total_size, -1);
+  for (int node=0 ; node<total_size ; node++) {
     renumber[n2c[node]]++;
   }
 
   int final=0;
-  for (int i=0 ; i<size ; i++)
+  for (int i=0 ; i<total_size ; i++)
     if (renumber[i]!=-1)
       renumber[i]=final++;
 
-  for (int i=0 ; i<size ; i++)
+  for (int i=0 ; i<total_size ; i++)
     cout << i << " " << renumber[n2c[i]] << endl;
 }
 
