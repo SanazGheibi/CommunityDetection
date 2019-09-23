@@ -42,7 +42,7 @@ Graph::Graph(char *filename, char *filename_w, int type) {
   nb_links=degrees[nb_nodes-1];
 
   links.resize(nb_links);
-  finput.read((char *)(&links[0]), (long)nb_links*8);  
+  finput.read((char *)(&links[0]), (long)nb_links*4);  
 
   // IF WEIGHTED : read weights: 4 bytes for each link (each link is counted twice)
   weights.resize(0);
@@ -52,7 +52,7 @@ Graph::Graph(char *filename, char *filename_w, int type) {
     finput_w.open(filename_w,fstream::in | fstream::binary);
     weights.resize(nb_links);
     finput_w.read((char *)&weights[0], (long)nb_links*4);  
-  }    
+  }  
 
   // Compute total weight
   for (unsigned int i=0 ; i<nb_nodes ; i++) {
@@ -164,7 +164,8 @@ Graph::display_binary(char *outfile) {
   ofstream foutput;
   foutput.open(outfile ,fstream::out | fstream::binary);
 
-  foutput.write((char *)(&nb_nodes),4);
-  foutput.write((char *)(&degrees[0]),4*nb_nodes);
-  foutput.write((char *)(&links[0]),8*nb_links);
+  foutput.write((char *)(&nb_nodes),4);  
+  //sanaz: a fix, it used to write 4 bytes, but read 8 bytes in constructor
+  foutput.write((char *)(&degrees[0]),8*nb_nodes);
+  foutput.write((char *)(&links[0]),4*nb_links);
 }
