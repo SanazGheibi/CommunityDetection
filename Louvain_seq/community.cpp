@@ -265,6 +265,9 @@ Community::partition2graph_binary() {
 
 bool
 Community::one_level() {
+  //sanaz: in order to test simulate annealing
+  min_modularity /= 10.0;
+
   bool improvement=false ;
   int nb_moves;
   int nb_pass_done = 0;
