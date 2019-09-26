@@ -159,8 +159,13 @@ main(int argc, char **argv) {
   time_end = clock();
   if (verbose) {
     display_time("End");
-    cerr << "Total duration: " << (double)(time_end-time_begin)/CLOCKS_PER_SEC << " sec." << endl;
   }
+  //modified by sanaz: show the total duration regardless of being verbose or not
+  cerr << "Total duration: " << (double)(time_end-time_begin)/CLOCKS_PER_SEC << " sec." << endl;
+
+  //sanaz: added in order to keep track of max level number for using in ./hierarchy
+  cerr << "lastLevel: " << (level-1) << endl;
+
   cerr << new_mod << endl;
 }
 
