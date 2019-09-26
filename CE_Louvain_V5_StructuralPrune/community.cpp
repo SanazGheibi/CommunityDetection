@@ -198,6 +198,10 @@ Community::init_partition(char * filename) {
     finput >> node >> comm;
     
     if (finput) {
+      //sanaz: to solve the problem of in[] - tot[] mismatch for pruned input graph
+      if(node >= (unsigned int)boundary)
+	  continue;    
+ 
       int old_comm = n2c[node];
       neigh_comm(node);
 
