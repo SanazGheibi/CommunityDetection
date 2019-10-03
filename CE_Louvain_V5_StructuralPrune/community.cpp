@@ -19,7 +19,7 @@
 
 using namespace std;
 
-Community::Community(char * filename, char * filename_w, int type, int nbp, double minm, int input_boundary) {
+Community::Community(char * filename, char * filename_w, int type, int nbp, double minm, bool iter1) {
   //Sanaz: this is the constructor which is called initially (before prune & ABFS_preodering); 
   //max_degree is therefore computed here
   g = Graph(filename, filename_w, type);
@@ -48,14 +48,12 @@ Community::Community(char * filename, char * filename_w, int type, int nbp, doub
   min_modularity = minm;
   
   //sanaz: for iterations where we don't prune the graph and just input the boundary value
-  if(input_boundary != 0){
+  if(!iter1){
      for (int i=0 ; i<size ; i++) {
 	n2c[i] = i;
 	in[i]  = g.nb_selfloops(i);
 	tot[i] = g.weighted_degree(i);
      }
-     boundary = input_boundary;
-     size = boundary; 
   }
 
 }
@@ -123,10 +121,11 @@ Community::prune_graph(int T){
   g2.nb_links = g.nb_links;
   g2.total_weight = g.total_weight;
   g2.degrees.resize(g.nb_nodes); //g.nb_nodes = size 
-  g2.links.resize(g.nb_links, -1); //some space will be wasted, but the will be fixed in transform()
+  g2.validTo.resize(g.nb_nodes);
+  g2.links.resize(g.nb_links, -1); //-1 is used later on to check correctness 
   int link_index = 0; 
+  int low_index = 0; 
   
-  g2.degrees[0] = 0; 
   //now the pruning starts:
   //the low degree nodes should be transferred to the end: two passes required
   int index = 0; 
@@ -134,34 +133,39 @@ Community::prune_graph(int T){
       int deg = g.nb_neighbors(node);
       if(deg <= T)
          continue;
-      if(index != 0)
-         g2.degrees[index] = g2.degrees[index-1]; //initialization
+      g2.degrees[index] = (index==0)?deg:g2.degrees[index-1]+deg;
+      g2.validTo[index] = g2.degrees[index]; //Where invalid neighbors start
+      low_index = g2.degrees[index]-1;
+      link_index = (index==0)?0:g2.degrees[index-1];
       pair<vector<unsigned int>::iterator, vector<float>::iterator> p = g.neighbors(node);
       for (int i=0 ; i<deg ; i++) {
            int neigh = *(p.first+i);  
            double weight = (g.weights.size()==0)?1.:*(p.second+i);
            int neigh_deg = g.nb_neighbors(neigh);
+	   neigh = renumber[neigh];
            if(neigh_deg > T){
-              neigh = renumber[neigh];
-              g2.degrees[index]++;
-              g2.links[link_index] = neigh;
-	      link_index++;
-              if(g.weights.size()!=0)
-                 g2.weights.push_back(weight); 
-           }else{
-	      g2.nb_links--;
-              g2.total_weight -= weight;
-           }
+	        g2.links[link_index] = neigh;
+	        link_index++;
+	   }else{
+		g2.links[low_index] = neigh;
+		low_index--;
+		g2.validTo[index]--;
+		g2.total_weight -= weight; // we don't reduce nb_links, that is needed for accessing the links vector
+	   }
+	   if(g.weights.size()!=0)
+		g2.weights.push_back(weight);
       } 
       index++;    
   }
 
   //now the second pass;
+  link_index = g2.degrees[index-1];
   for(int node=0; node<size; node++){
       int deg = g.nb_neighbors(node);
       if(deg > T)
          continue;
       g2.degrees[index] = g2.degrees[index-1] + deg; 
+      g2.validTo[index] = g2.degrees[index];
       pair<vector<unsigned int>::iterator, vector<float>::iterator> p = g.neighbors(node);
       for (int i=0 ; i<deg ; i++) {
            int neigh = renumber[*(p.first+i)];
@@ -198,10 +202,7 @@ Community::init_partition(char * filename) {
     finput >> node >> comm;
     
     if (finput) {
-      //sanaz: to solve the problem of in[] - tot[] mismatch for pruned input graph
-      if(node >= (unsigned int)boundary)
-	  continue;    
- 
+
       int old_comm = n2c[node];
       neigh_comm(node);
 
@@ -438,7 +439,6 @@ Community::ABFS_preorder(vector<int>& retorder, long W){
    int final_index = 0; 
 
    while(k<size){ 
-
       //this outer loop is processed only when the queue is empty
       if(done[initOrder[k]] == 1){
          k++;
@@ -576,14 +576,17 @@ Community::transform(long W){
   g2.nb_links = g.nb_links;
   g2.total_weight = g.total_weight;
   g2.degrees.resize(g.nb_nodes); //g.nb_nodes = size 
+  g2.validTo.resize(g.nb_nodes);
   g2.links.resize(g.nb_links); //number of links should not change in ABFS preordering
 
   //g2.weights.resize(g.weights.size()); --> the cause of a bug
   int link_index = 0;
   for(int index=0; index<total_size; index++){
       int node = order[index];
-      int deg = g.nb_neighbors(node);
+      int deg = g.nb_neighbors_original(node);
+      int deg2 = g.nb_neighbors(node);
       g2.degrees[index] = (index==0)?deg:g2.degrees[index-1]+deg;
+      g2.validTo[index] = (index==0)?deg2:g2.degrees[index-1]+deg2;
       pair<vector<unsigned int>::iterator, vector<float>::iterator> p = g.neighbors(node);
       for(int i=0; i<deg; i++){
 	  int neigh = *(p.first+i);
@@ -685,7 +688,9 @@ Community::partition2graph_binary() {
   // Compute weighted graph
   Graph g2;
   g2.nb_nodes = comm_nodes.size();
-  g2.degrees.resize(comm_nodes.size());
+  g2.degrees.resize(comm_nodes.size());  
+  //sanaz:
+  g2.validTo.resize(comm_nodes.size());
 
   int comm_deg = comm_nodes.size();
   for (int comm=0 ; comm<comm_deg ; comm++) {
@@ -710,6 +715,8 @@ Community::partition2graph_binary() {
     }
     g2.degrees[comm]=(comm==0)?m.size():g2.degrees[comm-1]+m.size();
     g2.nb_links+=m.size();
+    //sanaz:
+    g2.validTo[comm] = g2.degrees[comm];
 
     for (it = m.begin() ; it!=m.end() ; it++) {
       g2.total_weight  += it->second;
@@ -760,6 +767,8 @@ Community::partition2graph_binary_l0() {
   Graph g2;
   g2.nb_nodes = comm_nodes.size();
   g2.degrees.resize(comm_nodes.size());
+  //sanaz:
+  g2.validTo.resize(comm_nodes.size());
 
   int comm_deg = comm_nodes.size();
   for (int comm=0 ; comm<comm_deg ; comm++) {
@@ -796,6 +805,8 @@ Community::partition2graph_binary_l0() {
 
     g2.degrees[comm]=(comm==0)?m.size():g2.degrees[comm-1]+m.size();
     g2.nb_links+=m.size();
+    //sanaz:
+    g2.validTo[comm] = g2.degrees[comm];
 
     for (it = m.begin() ; it!=m.end() ; it++) {
       g2.total_weight  += it->second;
