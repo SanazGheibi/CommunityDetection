@@ -574,7 +574,7 @@ Community::partition2graph_binary() {
 
 //sanaz: W is the window size (size of LLC/fast memory in Bytes)
 bool
-Community::one_level(int W, bool level0) {
+Community::one_level(int W, bool level0) {  
   bool improvement=false ;
   int nb_moves;
 
@@ -608,7 +608,6 @@ Community::one_level(int W, bool level0) {
  	       insider[j] = 1;
 	  }
 	  nb_moves = 0;
-
           //experiment with doing the full sweep in the middle:
           /*if(start >= size/2 && middleReached == 0){
              middleReached = 1;
@@ -616,7 +615,7 @@ Community::one_level(int W, bool level0) {
           }*/          
 
           do {
-                      int node = Q.front();
+		      int node = Q.front();
                       int node_comm = n2c[node];
 		      double w_degree = g.weighted_degree(node);
 
@@ -647,23 +646,25 @@ Community::one_level(int W, bool level0) {
 		      if(best_comm!=node_comm){
 		        //add neighbors to the queue, whose community != best_community
 		        //assumption: the neighbor oder here is the same as what appears in neigh_pos[] array
-		        pair<vector<unsigned int>::iterator, vector<float>::iterator> p = g.neighbors(node);
-		        unsigned int deg = g.nb_neighbors(node);
-		        for(unsigned int i=0; i<deg ; i++){
-		           int neigh = *(p.first+i);
-                           if(neigh < start || neigh > end)
-                              continue;
-		           int n_comm = n2c[neigh];
-		           if(n_comm != best_comm && insider[neigh] == 0){
-                             Q.push(neigh);
-                             insider[neigh] = 1;
-		           }
-		        }
+			//cerr << "best_increase*coeff: " << best_increase*coeff << " , min_modularity: " << min_modularity << endl;
+			//cerr << "best_increase: " << best_increase << endl;
+			/*cerr << "here!" << endl;
+			pair<vector<unsigned int>::iterator, vector<float>::iterator> p = g.neighbors(node);
+			unsigned int deg = g.nb_neighbors(node);
+			for(unsigned int i=0; i<deg ; i++){
+			      int neigh = *(p.first+i);
+			      if(neigh < start || neigh > end)
+			          continue;
+			      int n_comm = n2c[neigh];
+			      if(n_comm != best_comm && insider[neigh] == 0){
+				  Q.push(neigh);
+				  insider[neigh] = 1;
+			       }
+			}*/
 			nb_moves++;
 		      }
 
 	  } while (!Q.empty());
-          
           if (nb_moves>0)
 	     improvement=true;
      
