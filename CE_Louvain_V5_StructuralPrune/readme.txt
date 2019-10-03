@@ -68,11 +68,6 @@ after the ABFS reodering. This is needed, because if we want to feed the
 community assignments into another iterations, node IDs should match
 ./community graph.bin -r reordered.bin -c 4 -l -1 -v -q 0.0001 > graph.tree
 
-New optioin -b added by sanaz:(only used in iterations > 1)
-Graph is pruned only in the first iteration. After that, it is enough to pass
-on the boundary. -b is used to define the boundary from the previous iteration
-./community reorder.bin -p comm.txt -b 7 -c 4 -l -1 -v -q 0.0001 > graph.tree
-
 3. Displays information on the tree structure (number of hierarchical
 levels and nodes per level):
 ./hierarchy graph.tree
