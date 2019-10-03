@@ -45,7 +45,7 @@ int display_level = -2;
 int k1 = 16;
 //sanaz:
 char *reorder_file = NULL;
-int boundary = 0;
+bool iter1 = true; // by default, we only run 1 iteration 
 
 bool verbose = false;
 
@@ -85,6 +85,7 @@ parse_args(int argc, char **argv) {
       case 'p':
         filename_part = argv[i+1];
 	i++;
+	iter1 = false; // added by sanaz
 	break;
       case 'q':
 	precision = atof(argv[i+1]);
@@ -107,10 +108,6 @@ parse_args(int argc, char **argv) {
 	break;
       case 'r': //sanaz: the re-ordered graph should be written out and be used in next iterations
 	reorder_file = argv[i+1];
-	i++;
-      break;
-      case 'b': //sanaz: the boundary value, used in iterations > 1
-	boundary = atoi(argv[i+1]);
 	i++;
       break;
       default:
@@ -138,18 +135,14 @@ main(int argc, char **argv) {
   srand(time(NULL)+getpid());
 
   parse_args(argc, argv);
-  W = coef * W; 
-  if(filename_part != NULL && boundary == 0){
-     cerr << "Error: for iteration > 1, boundary value is needed" << endl;
-     exit(EXIT_FAILURE);
-  }
+  W = coef * W;
 
   clock_t time_begin1, time_end1, time_begin2, time_end2;
   time_begin1 = clock();
   if (verbose)
     display_time("Begin");
 
-  Community c(filename, filename_w, type, -1, precision, boundary);	
+  Community c(filename, filename_w, type, -1, precision, iter1);	
             
   if (filename_part!=NULL)
     c.init_partition(filename_part);
@@ -176,9 +169,6 @@ main(int argc, char **argv) {
 	  if(reorder_file != NULL)
 	  	c.g.display_binary(reorder_file);
   }
-  //To be used in later iterations and in the corresponding script
-  cerr << "boundary: " << c.boundary << endl;
-
 
   time_begin2 = clock();
   Graph g;
@@ -206,13 +196,12 @@ main(int argc, char **argv) {
       g.display();
     if (display_level==-1)
       c.display_partition();
-    if((level-1) == 0) //level has already been updated
+    //We need to merge the low degree nodes only in iteration 0
+    if((level-1) == 0 && filename_part == NULL) //level has already been updated
     	g = c.partition2graph_binary_l0();
     else
         g = c.partition2graph_binary();
-
     c = Community(g, -1, precision);
-
     if (verbose)
       cerr << "  modularity increased from " << mod << " to " << new_mod << endl;
 
