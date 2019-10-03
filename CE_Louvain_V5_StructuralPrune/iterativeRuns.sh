@@ -6,16 +6,14 @@ echo -n "" > bc.txt
 ./community ~/Louvain_input/RandomShuffle_amazon.bin -r reordered.bin -c 4 -l -1 -v -q 0.0001 > graph.tree 2> res.txt
 grep 'duration' ./res.txt >> runtimes.txt
 grep 'lastLevel' ./res.txt > level_info.txt
-grep 'boundary' ./res.txt > bnd_info.txt
 read -r pass level < level_info.txt
-read -r pass boundary < bnd_info.txt
 ./hierarchy graph.tree -l $level > comm.txt
 cat res.txt >> allResults.txt
 echo -e "\n" >> allResults.txt
 
 for((i=1; i < $n; i++)); do  
     #boundary is the same in all iterations following the first iteration
-    ./community reordered.bin -p comm.txt -b $boundary -c 4 -l -1 -v -q 0.0001 > graph.tree 2> res.txt
+    ./community reordered.bin -p comm.txt -c 4 -l -1 -v -q 0.0001 > graph.tree 2> res.txt
     grep 'duration' ./res.txt >> runtimes.txt
     grep 'lastLevel' ./res.txt > level_info.txt
     read -r pass level < level_info.txt
@@ -39,4 +37,3 @@ rm comm.txt
 rm level_info.txt
 rm res.txt
 rm runtimes.txt
-rm bnd_info.txt
