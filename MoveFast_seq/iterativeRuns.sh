@@ -3,7 +3,7 @@ preOrder=$1
 name=$2
 n=$3
 echo -n "" > runtimes.txt
-echo -n "" > "${preOrder}_${name}.txt"
+echo -n "" > "allResults_${preOrder}_${name}.txt"
 echo -n "" > bc.txt
 ./community ~/Louvain_input/"${preOrder}_${name}.bin" -l -1 -v  -q 0.0001 > graph.tree 2> res.txt
 grep 'duration' ./res.txt >> runtimes.txt
