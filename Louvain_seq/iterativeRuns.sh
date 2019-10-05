@@ -1,25 +1,28 @@
 #!/bin/bash
-n=$1
+preOrder=$1
+name=$2
+n=$3
 echo -n "" > runtimes.txt
-echo -n "" > allResults.txt
+echo -n "" > "allResults_${preOrder}_${name}.txt"
 echo -n "" > bc.txt
-./community ~/Louvain_input/RandomShuffle_amazon.bin -l -1 -v  -q 0.0001 > graph.tree 2> res.txt
+./community ~/Louvain_input/"${preOrder}_${name}.bin" -l -1 -v  -q 0.0001 > graph.tree 2> res.txt
 grep 'duration' ./res.txt >> runtimes.txt
 grep 'lastLevel' ./res.txt > level_info.txt
 read -r pass level < level_info.txt
 ./hierarchy graph.tree -l $level > comm.txt
-cat res.txt >> allResults.txt
-echo -e "\n" >> allResults.txt
+rm graph.tree
+cat res.txt >> "allResults_${preOrder}_${name}.txt"
+echo -e "\n" >> "allResults_${preOrder}_${name}.txt"
 
 for((i=1; i < $n; i++)); do
-    echo "i: $i"
-    ./community ~/Louvain_input/RandomShuffle_amazon.bin -p comm.txt -l -1 -v -q 0.0001 > graph.tree 2> res.txt
+    ./community ~/Louvain_input/"${preOrder}_${name}.bin" -p comm.txt -l -1 -v -q 0.0001 > graph.tree 2> res.txt
     grep 'duration' ./res.txt >> runtimes.txt
     grep 'lastLevel' ./res.txt > level_info.txt
     read -r pass level < level_info.txt
     ./hierarchy graph.tree -l $level > comm.txt
-    cat res.txt >> allResults.txt
-    echo -e "\n" >> allResults.txt
+    rm graph.tree
+    cat res.txt >> "allResults_${preOrder}_${name}.txt"
+    echo -e "\n" >> "allResults_${preOrder}_${name}.txt"
 done
 
 echo -e "sum = 0.0\n" >> bc.txt
@@ -29,7 +32,7 @@ do
 done < runtimes.txt
 echo -e "print sum\n" >> bc.txt
 s=`cat bc.txt | bc -l`
-echo "overall runtime: $s"
+echo "overall runtime: $s" >> "allResults_${preOrder}_${name}.txt"
 
 #final clean up 
 rm bc.txt
