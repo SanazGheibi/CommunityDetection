@@ -11,4 +11,11 @@ Where the input file is a text file containing the graph in edge-list format. An
 0       2
 1       3
 
+New modifications: 
+1. Nodes are renumbered, so that there is no gap in indexing
+2. Parallel links are removed 
+3. In the output, links are written in both directions
+4. Output links are written in no particular order 
+
+
 
