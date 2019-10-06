@@ -8,7 +8,7 @@ OBJ= graph.o
 
 all: $(EXEC)
 
-convert : $(OBJ) main_convert.o
+RSH : $(OBJ) main_convert.o
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 ##########################################
