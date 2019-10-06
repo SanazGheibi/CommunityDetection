@@ -20,7 +20,7 @@ main(int argc, char **argv) {
      exit(0);
   }
   string infile = argv[1];
-  string outfile = extractFilename(filename) + "_RSH";
+  string outfile = extractFilename(infile) + "_RSH.txt";
 
   Graph g(infile);
  
@@ -31,6 +31,6 @@ main(int argc, char **argv) {
   vector<int> order;
   g.RandomShuffle(order);
 
-  g.display_ascii(outfile, outfile_w, order);
+  g.display_ascii(outfile, order);
 
 }
