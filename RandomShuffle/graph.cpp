@@ -18,14 +18,17 @@
 
 using namespace std;
 
-Graph::Graph(char *filename) {
+Graph::Graph(string filename) {
   ifstream finput;
-  finput.open(filename,fstream::in);
+  char * cstr = new char [filename.length()+1];
+  strcpy (cstr, filename.c_str());
+  finput.open(cstr, ifstream::in);
 
   int nb_links=0;
 
   while (!finput.eof()) {
     unsigned int src, dest;
+    finput >> src >> dest;
     double weight=1.;
     
     if (finput) {
@@ -95,9 +98,11 @@ Graph::clean() {
 
 //sanaz: replaced display_binary with display_ascii
 void
-Graph::display_ascii(char *filename, char *filename_w, vector<int>& order) {
+Graph::display_ascii(string filename, vector<int>& order) {
   ofstream foutput;
-  foutput.open(filename);
+  char * cstr = new char [filename.length()+1];
+  std::strcpy (cstr, filename.c_str());
+  foutput.open(cstr);
   for(unsigned int i=0; i<links.size(); i++)
       for(unsigned int j=0; j<links[i].size(); j++)
           foutput << order[i] << "\t" << order[links[i][j].first] << endl;
