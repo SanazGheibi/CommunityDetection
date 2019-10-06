@@ -28,6 +28,7 @@
 #include <algorithm>
 #include <sstream>
 #include <string>
+#include <cstring>
 
 #define WEIGHTED   0
 #define UNWEIGHTED 1
@@ -38,13 +39,13 @@ class Graph {
  public:
   vector<vector<pair<int,float> > > links;
   
-  Graph (char *filename);
+  Graph (string filename);
   
   void clean();
   void renumber();
   
   //sanaz:
-  void display_ascii(char *filename, char *filename_w, vector<int>& order);
+  void display_ascii(string filename, vector<int>& order);
   void RandomShuffle(vector<int>& retorder);
 
 };
