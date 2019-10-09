@@ -1,2 +1,2 @@
-Code from LFR benchmark, used to produce synthetic networks. Code taken from https://sites.google.com/site/andrealancichinetti/files
-Script added to it. 
+Code from LFR benchmark, used to produce synthetic networks. Code (minus the running script) taken from https://sites.google.com/site/andrealancichinetti/files
+ 
