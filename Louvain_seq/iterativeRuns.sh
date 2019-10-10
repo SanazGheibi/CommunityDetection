@@ -1,28 +1,29 @@
 #!/bin/bash
 preOrder=$1
 name=$2
-n=$3
+echo "Code: Louvain_seq"
+echo "dataset: ${name}"
 echo -n "" > runtimes.txt
-echo -n "" > "allResults_${preOrder}_${name}.txt"
 echo -n "" > bc.txt
 ./community ~/Louvain_input/"${preOrder}_${name}.bin" -l -1 -v  -q 0.0001 > graph.tree 2> res.txt
 grep 'duration' ./res.txt >> runtimes.txt
+grep 'finalModularity' ./res.txt > mod_info.txt
 grep 'lastLevel' ./res.txt > level_info.txt
 read -r pass level < level_info.txt
 ./hierarchy graph.tree -l $level > comm.txt
 rm graph.tree
-cat res.txt >> "allResults_${preOrder}_${name}.txt"
-echo -e "\n" >> "allResults_${preOrder}_${name}.txt"
 
-for((i=1; i < $n; i++)); do
+stop=0 #run for at least a seond iteration
+while [  ${stop} -lt 1 ]; do
     ./community ~/Louvain_input/"${preOrder}_${name}.bin" -p comm.txt -l -1 -v -q 0.0001 > graph.tree 2> res.txt
     grep 'duration' ./res.txt >> runtimes.txt
+    grep 'finalModularity' ./res.txt > mod_info.txt
+    grep 'stopIterating' ./res.txt > stop_info.txt
+    read -r pass stop < stop_info.txt
     grep 'lastLevel' ./res.txt > level_info.txt
     read -r pass level < level_info.txt
     ./hierarchy graph.tree -l $level > comm.txt
     rm graph.tree
-    cat res.txt >> "allResults_${preOrder}_${name}.txt"
-    echo -e "\n" >> "allResults_${preOrder}_${name}.txt"
 done
 
 echo -e "sum = 0.0\n" >> bc.txt
@@ -32,7 +33,9 @@ do
 done < runtimes.txt
 echo -e "print sum\n" >> bc.txt
 s=`cat bc.txt | bc -l`
-echo "overall runtime: $s" >> "allResults_${preOrder}_${name}.txt"
+echo "overall runtime: $s" 
+cat mod_info.txt
+echo -e "\n"
 
 #final clean up 
 rm bc.txt
@@ -40,3 +43,5 @@ rm comm.txt
 rm level_info.txt
 rm res.txt
 rm runtimes.txt
+rm mod_info.txt
+rm stop_info.txt
