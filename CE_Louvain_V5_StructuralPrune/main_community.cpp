@@ -163,7 +163,7 @@ main(int argc, char **argv) {
 	  preOrder_begin=clock();
 	  c.transform(W);
 	  preOrder_end=clock();
-	  cerr << "pre_ordering time: " << (double)(preOrder_end-preOrder_begin)/CLOCKS_PER_SEC << endl;
+	  cerr << "pre_ordering time: " << (double)(preOrder_end-preOrder_begin)/CLOCKS_PER_SEC << " sec." << endl;
           //sanaz: in order for the iterative method to work correctly, we should produced a new .bin file based 
 	  //on the transformed graph
 	  if(reorder_file != NULL)
@@ -174,6 +174,7 @@ main(int argc, char **argv) {
   Graph g;
   bool improvement=true;
   double mod=c.modularity(), new_mod;
+  double init_mod = mod;
   int level=0;
 
   do {
@@ -222,7 +223,11 @@ main(int argc, char **argv) {
 
   //sanaz: information printed out will be used in later iterations (and in the corresponding script)
   cerr << "lastLevel: " << (level-1) << endl;
-
-  cerr << new_mod << endl;
+  if(new_mod-init_mod < precision*10)
+	cerr << "stopIterating: 1" << endl;
+  else
+	cerr << "stopIterating: 0" << endl;
+  
+  cerr << "finalModularity: " << new_mod << endl;
 }
 
