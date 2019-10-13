@@ -1,5 +1,5 @@
 #!/bin/bash
-name="liveJournal"
+name="lj"
 cache=4
 ./Louvain_updated/community ~/Louvain_input/"RandomShuffle_${name}.bin" -l -1 -v -q 0.0001 > ./Louvain_updated/graph.tree 2> "./Louvain_updated/${name}_res.txt" 
 rm ./Louvain_updated/graph.tree
