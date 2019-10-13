@@ -2,7 +2,7 @@
 preOrder=$1
 name=$2
 echo "Code: MoveFast_seq"
-echo "dataset: ${name}"
+echo "dataset: ${preOrder}_${name}"
 echo -n "" > runtimes.txt
 echo -n "" > bc.txt
 ./community ~/Louvain_input/"${preOrder}_${name}.bin" -l -1 -v  -q 0.0001 > graph.tree 2> res.txt
