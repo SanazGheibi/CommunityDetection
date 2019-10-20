@@ -1,47 +1,50 @@
 #!/bin/bash
 preOrder=$1
 name=$2
+path=$3  #path to current folder
+dpath=$4 #path to dataset
+#sample use: ./iterativeRuns.sh RandomShuffle amazon . ~ 
 echo "Code: Louvain_seq"
 echo "dataset: ${preOrder}_${name}"
-echo -n "" > runtimes.txt
-echo -n "" > bc.txt
-./community ~/Louvain_input/"${preOrder}_${name}.bin" -l -1 -v  -q 0.0001 > graph.tree 2> res.txt
-grep 'duration' ./res.txt >> runtimes.txt
-grep 'finalModularity' ./res.txt > mod_info.txt
-grep 'lastLevel' ./res.txt > level_info.txt
-read -r pass level < level_info.txt
-./hierarchy graph.tree -l $level > comm.txt
-rm graph.tree
+echo -n "" > "${path}"/runtimes.txt
+echo -n "" > "${path}"/bc.txt
+"${path}"/community "${dpath}"/Louvain_input/"${preOrder}_${name}.bin" -l -1 -v  -q 0.0001 > "${path}"/graph.tree 2> "${path}"/res.txt
+grep 'duration' "${path}"/res.txt >> "${path}"/runtimes.txt
+grep 'finalModularity' "${path}"/res.txt > "${path}"/mod_info.txt
+grep 'lastLevel' "${path}"/res.txt > "${path}"/level_info.txt
+read -r pass level < "${path}"/level_info.txt
+"${path}"/hierarchy "${path}"/graph.tree -l $level > "${path}"/comm.txt
+rm "${path}"/graph.tree
 
 stop=0 #run for at least a seond iteration
 while [  ${stop} -lt 1 ]; do
-    ./community ~/Louvain_input/"${preOrder}_${name}.bin" -p comm.txt -l -1 -v -q 0.0001 > graph.tree 2> res.txt
-    grep 'duration' ./res.txt >> runtimes.txt
-    grep 'finalModularity' ./res.txt > mod_info.txt
-    grep 'stopIterating' ./res.txt > stop_info.txt
-    read -r pass stop < stop_info.txt
-    grep 'lastLevel' ./res.txt > level_info.txt
-    read -r pass level < level_info.txt
-    ./hierarchy graph.tree -l $level > comm.txt
-    rm graph.tree
+    "${path}"/community "${dpath}"/Louvain_input/"${preOrder}_${name}.bin" -p "${path}"/comm.txt -l -1 -v -q 0.0001 > "${path}"/graph.tree 2> "${path}"/res.txt
+    grep 'duration' "${path}"/res.txt >> "${path}"/runtimes.txt
+    grep 'finalModularity' "${path}"/res.txt > "${path}"/mod_info.txt
+    grep 'stopIterating' "${path}"/res.txt > "${path}"/stop_info.txt
+    read -r pass stop < "${path}"/stop_info.txt
+    grep 'lastLevel' "${path}"/res.txt > "${path}"/level_info.txt
+    read -r pass level < "${path}"/level_info.txt
+    "${path}"/hierarchy "${path}"/graph.tree -l $level > "${path}"/comm.txt
+    rm "${path}"/graph.tree
 done
 
-echo -e "sum = 0.0\n" >> bc.txt
+echo -e "sum = 0.0\n" >> "${path}"/bc.txt
 while read -r col1 col2 col3 col4
 do
-   echo -e "sum = sum + $col3\n" >> bc.txt
-done < runtimes.txt
-echo -e "print sum\n" >> bc.txt
-s=`cat bc.txt | bc -l`
+   echo -e "sum = sum + $col3\n" >> "${path}"/bc.txt
+done < "${path}"/runtimes.txt
+echo -e "print sum\n" >> "${path}"/bc.txt
+s=`cat "${path}"/bc.txt | bc -l`
 echo "overall runtime: $s" 
-cat mod_info.txt
+cat "${path}"/mod_info.txt
 echo -e "\n"
 
 #final clean up 
-rm bc.txt
-rm comm.txt
-rm level_info.txt
-rm res.txt
-rm runtimes.txt
-rm mod_info.txt
-rm stop_info.txt
+rm "${path}"/bc.txt
+rm "${path}"/comm.txt
+rm "${path}"/level_info.txt
+rm "${path}"/res.txt
+rm "${path}"/runtimes.txt
+rm "${path}"/mod_info.txt
+rm "${path}"/stop_info.txt
