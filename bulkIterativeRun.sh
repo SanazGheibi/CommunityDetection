@@ -1,11 +1,12 @@
 #!/bin/bash
 logFile="./bulkIterativeLog.txt"
+cache=4 #cache size in MBs
 echo -n "" > "$logFile"
 for name in net6_0.2 net6_0.4 net6_0.6 net6_0.8
 do
-./CE_Louvain_V5/iterativeRuns.sh "${name}" ./CE_Louvain_V5 ~ >> "$logFile"
-./CE_Louvain_V5_1/iterativeRuns.sh "${name}" ./CE_Louvain_V5_1 ~ >> "$logFile"
-./CE_Louvain_V5_StructuralPrune/iterativeRuns.sh "${name}" ./CE_Louvain_V5_StructuralPrune ~ >> "$logFile"
+./CE_Louvain_V5/iterativeRuns.sh "${name}" ./CE_Louvain_V5 ~ ${cache} >> "$logFile"
+./CE_Louvain_V5_1/iterativeRuns.sh "${name}" ./CE_Louvain_V5_1 ~ ${cache} >> "$logFile"
+./CE_Louvain_V5_StructuralPrune/iterativeRuns.sh "${name}" ./CE_Louvain_V5_StructuralPrune ~ ${cache} >> "$logFile"
 ./Louvain_seq/iterativeRuns.sh RandomShuffle "${name}" ./Louvain_seq ~ >> "$logFile"
 ./Louvain_seq/iterativeRuns.sh rcmOrdered "${name}" ./Louvain_seq ~ >> "$logFile"
 ./Louvain_seq/iterativeRuns.sh uscOrdered "${name}" ./Louvain_seq ~ >> "$logFile"
