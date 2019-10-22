@@ -209,7 +209,7 @@ main(int argc, char **argv) {
 
   //sanaz: added in order to keep track of max level number for using in ./hierarchy
   cerr << "lastLevel: " << (level-1) << endl;
-  if(new_mod-init_mod < precision*10)
+  if(new_mod-init_mod < precision)
 	cerr << "stopIterating: 1" << endl;
   else
 	cerr << "stopIterating: 0" << endl;
