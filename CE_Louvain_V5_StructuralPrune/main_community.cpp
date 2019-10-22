@@ -223,7 +223,7 @@ main(int argc, char **argv) {
 
   //sanaz: information printed out will be used in later iterations (and in the corresponding script)
   cerr << "lastLevel: " << (level-1) << endl;
-  if(new_mod-init_mod < precision*10)
+  if(new_mod-init_mod < precision)
 	cerr << "stopIterating: 1" << endl;
   else
 	cerr << "stopIterating: 0" << endl;
