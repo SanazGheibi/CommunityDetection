@@ -41,9 +41,8 @@ for ((i=1; i <= $n; i++)); do
 	done < "${path}"/runtimes.txt
 	echo -e "print sum\n" >> "${path}"/bc.txt
 	s=`cat "${path}"/bc.txt | bc -l`
-	echo "overall runtime: $s" 
-	cat "${path}"/mod_info.txt
-	echo -e "\n"
+	echo "overall runtime: $s" >> "${path}"/nRuntime.txt 
+	cat "${path}"/mod_info.txt >> "${path}"/nMod.txt
 
 	#final clean up 
 	rm "${path}"/bc.txt
