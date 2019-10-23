@@ -42,7 +42,6 @@ for ((i=1; i <= $n; i++)); do
 	s=`cat "${path}"/bc.txt | bc -l`
 	echo "overall runtime: $s" >> "${path}"/nRuntime.txt
 	cat "${path}"/mod_info.txt >> "${path}"/nMod.txt
-	echo -e "\n"
 
 	#final clean up 
 	rm "${path}"/bc.txt
