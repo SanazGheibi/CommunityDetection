@@ -41,7 +41,7 @@ class Graph {
 
   vector<unsigned long> degrees;
   vector<unsigned int> links;
-  vector<float> weights;
+  vector<double> weights;
 
   Graph();
 
@@ -54,7 +54,7 @@ class Graph {
   // IF WEIGHTED 4*(sum_degrees) bytes for the weights in a separate file
   Graph(char *filename, char *filename_w, int type);
   
-  Graph(int nb_nodes, int nb_links, double total_weight, int *degrees, int *links, float *weights);
+  Graph(int nb_nodes, int nb_links, double total_weight, int *degrees, int *links, double *weights);
 
   void display(void);
   //sanaz:
@@ -74,7 +74,7 @@ class Graph {
   inline double weighted_degree(unsigned int node);
 
   // return pointers to the first neighbor and first weight of the node
-  inline pair<vector<unsigned int>::iterator, vector<float>::iterator > neighbors(unsigned int node);
+  inline pair<vector<unsigned int>::iterator, vector<double>::iterator > neighbors(unsigned int node);
 };
 
 
@@ -92,7 +92,7 @@ inline double
 Graph::nb_selfloops(unsigned int node) {
   assert(node>=0 && node<nb_nodes);
 
-  pair<vector<unsigned int>::iterator, vector<float>::iterator > p = neighbors(node);
+  pair<vector<unsigned int>::iterator, vector<double>::iterator > p = neighbors(node);
   for (unsigned int i=0 ; i<nb_neighbors(node) ; i++) {
     if (*(p.first+i)==node) {
       if (weights.size()!=0)
@@ -111,7 +111,7 @@ Graph::weighted_degree(unsigned int node) {
   if (weights.size()==0)
     return (double)nb_neighbors(node);
   else {
-    pair<vector<unsigned int>::iterator, vector<float>::iterator > p = neighbors(node);
+    pair<vector<unsigned int>::iterator, vector<double>::iterator > p = neighbors(node);
     double res = 0;
     for (unsigned int i=0 ; i<nb_neighbors(node) ; i++) {
       res += (double)*(p.second+i);
@@ -120,7 +120,7 @@ Graph::weighted_degree(unsigned int node) {
   }
 }
 
-inline pair<vector<unsigned int>::iterator, vector<float>::iterator >
+inline pair<vector<unsigned int>::iterator, vector<double>::iterator >
 Graph::neighbors(unsigned int node) {
   assert(node>=0 && node<nb_nodes);
 

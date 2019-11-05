@@ -53,6 +53,8 @@ Graph::Graph(char *filename, char *filename_w, int type) {
   weights.resize(0);
   total_weight=0;
   if (type==WEIGHTED) {
+    cerr << "float - double mismatch between hierarchy and community phases. To be fixed later" << endl;
+    exit(EXIT_FAILURE);
     ifstream finput_w;
     finput_w.open(filename_w,fstream::in | fstream::binary);
     weights.resize(nb_links);
@@ -65,7 +67,7 @@ Graph::Graph(char *filename, char *filename_w, int type) {
   }
 }
 
-Graph::Graph(int n, int m, double t, int *d, int *l, float *w) {
+Graph::Graph(int n, int m, double t, int *d, int *l, double *w) {
 /*  nb_nodes     = n;
   nb_links     = m;
   total_weight = t;
@@ -89,7 +91,7 @@ Graph::display() {
     }   
   }*/
   for (unsigned int node=0 ; node<nb_nodes ; node++) {
-    pair<vector<unsigned int>::iterator, vector<float>::iterator > p = neighbors(node);
+    pair<vector<unsigned int>::iterator, vector<double>::iterator > p = neighbors(node);
     cout << node << ":" ;
     for (unsigned int i=0 ; i<nb_neighbors(node) ; i++) {
       if (true) {
@@ -106,7 +108,7 @@ Graph::display() {
 void
 Graph::display_reverse() {
   for (unsigned int node=0 ; node<nb_nodes ; node++) {
-    pair<vector<unsigned int>::iterator, vector<float>::iterator > p = neighbors(node);
+    pair<vector<unsigned int>::iterator, vector<double>::iterator > p = neighbors(node);
     for (unsigned int i=0 ; i<nb_neighbors(node) ; i++) {
       if (node>*(p.first+i)) {
 	if (weights.size()!=0)
@@ -127,7 +129,7 @@ Graph::print_graph(){
       cerr << i << " : " << endl;
       int deg = nb_neighbors(i);
       cerr << "deg: " << deg << endl;
-      pair<vector<unsigned int>::iterator, vector<float>::iterator> p = neighbors(i);
+      pair<vector<unsigned int>::iterator, vector<double>::iterator> p = neighbors(i);
       for(int j=0; j<deg; j++){
          int neigh = *(p.first+j);
          double weight = (weights.size()==0)?1.:*(p.second+j);
@@ -142,15 +144,15 @@ bool
 Graph::check_symmetry() {
   int error=0;
   for (unsigned int node=0 ; node<nb_nodes ; node++) {
-    pair<vector<unsigned int>::iterator, vector<float>::iterator > p = neighbors(node);
+    pair<vector<unsigned int>::iterator, vector<double>::iterator > p = neighbors(node);
     for (unsigned int i=0 ; i<nb_neighbors(node) ; i++) {
       unsigned int neigh = *(p.first+i);
-      float weight = *(p.second+i);
+      double weight = *(p.second+i);
       
-      pair<vector<unsigned int>::iterator, vector<float>::iterator > p_neigh = neighbors(neigh);
+      pair<vector<unsigned int>::iterator, vector<double>::iterator > p_neigh = neighbors(neigh);
       for (unsigned int j=0 ; j<nb_neighbors(neigh) ; j++) {
 	unsigned int neigh_neigh = *(p_neigh.first+j);
-	float neigh_weight = *(p_neigh.second+j);
+	double neigh_weight = *(p_neigh.second+j);
 
 	if (node==neigh_neigh && weight!=neigh_weight) {
 	  cout << node << " " << neigh << " " << weight << " " << neigh_weight << endl;
@@ -166,6 +168,8 @@ Graph::check_symmetry() {
 
 void
 Graph::display_binary(char *outfile) {
+  cerr << "float - double mismatch between hierarchy and community phases. To be fixed later" << endl;
+  exit(EXIT_FAILURE);
   ofstream foutput;
   foutput.open(outfile ,fstream::out | fstream::binary);
 

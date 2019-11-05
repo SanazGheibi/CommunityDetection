@@ -137,7 +137,7 @@ Community::prune_graph(int T){
       g2.validTo[index] = g2.degrees[index]; //Where invalid neighbors start
       low_index = g2.degrees[index]-1;
       link_index = (index==0)?0:g2.degrees[index-1];
-      pair<vector<unsigned int>::iterator, vector<float>::iterator> p = g.neighbors(node);
+      pair<vector<unsigned int>::iterator, vector<double>::iterator> p = g.neighbors(node);
       for (int i=0 ; i<deg ; i++) {
            int neigh = *(p.first+i);  
            double weight = (g.weights.size()==0)?1.:*(p.second+i);
@@ -166,7 +166,7 @@ Community::prune_graph(int T){
          continue;
       g2.degrees[index] = g2.degrees[index-1] + deg; 
       g2.validTo[index] = g2.degrees[index];
-      pair<vector<unsigned int>::iterator, vector<float>::iterator> p = g.neighbors(node);
+      pair<vector<unsigned int>::iterator, vector<double>::iterator> p = g.neighbors(node);
       for (int i=0 ; i<deg ; i++) {
            int neigh = renumber[*(p.first+i)];
            g2.links[link_index] = neigh;
@@ -211,7 +211,7 @@ Community::init_partition(char * filename) {
       unsigned int i=0;
       for ( i=0 ; i<neigh_last ; i++) {
 	unsigned int best_comm     = neigh_pos[i];
-	float best_nblinks  = neigh_weight[neigh_pos[i]];
+	double best_nblinks  = neigh_weight[neigh_pos[i]];
 	if (best_comm==comm) {
 	  insert(node, best_comm, best_nblinks);
 	  break;
@@ -250,7 +250,7 @@ Community::neigh_comm(unsigned int node) {
     neigh_weight[neigh_pos[i]]=-1;
   neigh_last=0;
 
-  pair<vector<unsigned int>::iterator, vector<float>::iterator> p = g.neighbors(node);
+  pair<vector<unsigned int>::iterator, vector<double>::iterator> p = g.neighbors(node);
 
   unsigned int deg = g.nb_neighbors(node);
 
@@ -283,7 +283,7 @@ Community::neigh_comm_low(unsigned int node) {
   int max_inDeg = 0; 
   unsigned int ind = 0; 
 
-  pair<vector<unsigned int>::iterator, vector<float>::iterator> p = g.neighbors(node);
+  pair<vector<unsigned int>::iterator, vector<double>::iterator> p = g.neighbors(node);
 
   unsigned int deg = g.nb_neighbors(node);
 
@@ -328,7 +328,7 @@ Community::miniBatch_assign(long W){
         	    diff = deg - max_deg;
          	    max_deg = deg;
       		}
-      		long tmp = sizeof(int) + sizeof(unsigned long) + deg * (sizeof(unsigned int) + sizeof(float)); //Accounting for n2c, g.degrees[], g.links[] and g.weights[]
+      		long tmp = sizeof(int) + sizeof(unsigned long) + deg * (sizeof(unsigned int) + sizeof(double)); //Accounting for n2c, g.degrees[], g.links[] and g.weights[]
       		if(sum + tmp + diff *(long)(sizeof(double)+sizeof(unsigned int)) >= W)
         	   break;
       		sum += tmp + diff * (sizeof(double)+sizeof(unsigned int));
@@ -401,7 +401,7 @@ Community::update_sum(int curr, int* max_deg, long sum){
          diff = deg - *max_deg;
          *max_deg = deg; 
        }
-       long tmp = sizeof(int) + sizeof(unsigned long) + deg * (sizeof(unsigned int) + sizeof(float)); //Accounting for n2c, g.degrees[], g.links[] and g.weights[]
+       long tmp = sizeof(int) + sizeof(unsigned long) + deg * (sizeof(unsigned int) + sizeof(double)); //Accounting for n2c, g.degrees[], g.links[] and g.weights[]
        sum += tmp + diff * (sizeof(double)+sizeof(unsigned int));
        return sum; 
 }
@@ -485,7 +485,7 @@ Community::ABFS_preorder(vector<int>& retorder, long W){
 
            //insert the neighbors and remove curr from the queue
            int deg = g.nb_neighbors(curr);
-           pair<vector<unsigned int>::iterator, vector<float>::iterator> p = g.neighbors(curr);
+           pair<vector<unsigned int>::iterator, vector<double>::iterator> p = g.neighbors(curr);
            vector<int> children(deg,-1);
           
            int ch_num = 0; 
@@ -587,7 +587,7 @@ Community::transform(long W){
       int deg2 = g.nb_neighbors(node);
       g2.degrees[index] = (index==0)?deg:g2.degrees[index-1]+deg;
       g2.validTo[index] = (index==0)?deg2:g2.degrees[index-1]+deg2;
-      pair<vector<unsigned int>::iterator, vector<float>::iterator> p = g.neighbors(node);
+      pair<vector<unsigned int>::iterator, vector<double>::iterator> p = g.neighbors(node);
       for(int i=0; i<deg; i++){
 	  int neigh = *(p.first+i);
 	  g2.links[link_index] = reverse_map[neigh];
@@ -639,7 +639,7 @@ Community::partition2graph() {
 
 
   for (int i=0 ; i<size ; i++) {
-    pair<vector<unsigned int>::iterator, vector<float>::iterator> p = g.neighbors(i);
+    pair<vector<unsigned int>::iterator, vector<double>::iterator> p = g.neighbors(i);
 
     int deg = g.nb_neighbors(i);
     for (int j=0 ; j<deg ; j++) {
@@ -694,12 +694,12 @@ Community::partition2graph_binary() {
 
   int comm_deg = comm_nodes.size();
   for (int comm=0 ; comm<comm_deg ; comm++) {
-    map<int,float> m;
-    map<int,float>::iterator it;
+    map<int,double> m;
+    map<int,double>::iterator it;
 
     int comm_size = comm_nodes[comm].size();
     for (int node=0 ; node<comm_size ; node++) {
-      pair<vector<unsigned int>::iterator, vector<float>::iterator> p = g.neighbors(comm_nodes[comm][node]);
+      pair<vector<unsigned int>::iterator, vector<double>::iterator> p = g.neighbors(comm_nodes[comm][node]);
       int deg = g.nb_neighbors(comm_nodes[comm][node]);
       for (int i=0 ; i<deg ; i++) {
 	int neigh        = *(p.first+i);
@@ -748,7 +748,7 @@ Community::partition2graph_binary_l0() {
   vector<vector<pair<int, double> > > comm_lowNeighs(final); //keeping track of low degree neighbors of communities 
   for(int i=boundary; i<size; i++){
       int deg = g.nb_neighbors(i);
-      pair<vector<unsigned int>::iterator, vector<float>::iterator> p = g.neighbors(i);
+      pair<vector<unsigned int>::iterator, vector<double>::iterator> p = g.neighbors(i);
       for(int j=0; j<deg; j++){
           int neigh = *(p.first+j);
           double neigh_weight = (g.weights.size()==0)?1.:*(p.second+j);
@@ -773,12 +773,12 @@ Community::partition2graph_binary_l0() {
   int comm_deg = comm_nodes.size();
   for (int comm=0 ; comm<comm_deg ; comm++) {
 
-    map<int,float> m;
-    map<int,float>::iterator it;
+    map<int,double> m;
+    map<int,double>::iterator it;
 
     int comm_size = comm_nodes[comm].size();
     for (int node=0 ; node<comm_size ; node++) {
-      pair<vector<unsigned int>::iterator, vector<float>::iterator> p = g.neighbors(comm_nodes[comm][node]);
+      pair<vector<unsigned int>::iterator, vector<double>::iterator> p = g.neighbors(comm_nodes[comm][node]);
       int deg = g.nb_neighbors(comm_nodes[comm][node]);
       for (int i=0 ; i<deg ; i++) {
 	int neigh        = *(p.first+i);
@@ -893,7 +893,7 @@ Community::one_level(int W, bool level0) {
 		      if(best_comm!=node_comm){
 		        //add neighbors to the queue, whose community != best_community
 		        //assumption: the neighbor oder here is the same as what appears in neigh_pos[] array
-		        pair<vector<unsigned int>::iterator, vector<float>::iterator> p = g.neighbors(node);
+		        pair<vector<unsigned int>::iterator, vector<double>::iterator> p = g.neighbors(node);
 		        unsigned int deg = g.nb_neighbors(node);
 		        for(unsigned int i=0; i<deg ; i++){
 		           int neigh = *(p.first+i);
