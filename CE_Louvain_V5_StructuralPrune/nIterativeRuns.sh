@@ -27,7 +27,7 @@ for ((i=1; i <= $n; i++)); do
 
 	stop=0 #run for at least a seond iteration
 	while [  ${stop} -lt 1 ]; do
-	    "${path}"/community "${path}"/reordered.bin -p "${path}"/comm.txt -c 4 -l -1 -v -q 0.001 > "${path}"/graph.tree 2> "${path}"/res.txt
+	    "${path}"/community "${path}"/reordered.bin -p "${path}"/comm.txt -c $cache -l -1 -v -q 0.001 > "${path}"/graph.tree 2> "${path}"/res.txt
 	    grep 'duration' "${path}"/res.txt >> "${path}"/runtimes.txt
 	    grep 'finalModularity' "${path}"/res.txt > "${path}"/mod_info.txt
 	    grep 'stopIterating' "${path}"/res.txt > "${path}"/stop_info.txt
