@@ -17,7 +17,7 @@ rm ./MoveFast_seq/graph.tree
 rm ./MoveFast_seq/graph.tree
 ./MoveFast_seq/community ~/Louvain_input/"rcmOrdered_${name}.bin" -l -1 -v -q 0.0001 > ./MoveFast_seq/graph.tree 2> "./MoveFast_seq/rcm_${name}_res.txt"
 rm ./MoveFast_seq/graph.tree
-./CE_Louvain_V5_1/community ~/Louvain_input/"rcmOrdered_${name}.bin" -l -1 -v -q 0.0001 > ./CE_Louvain_V5_1/graph.tree 2> "./CE_Louvain_V5_1/rcm_${name}_res.txt"
+./CE_Louvain_V5_1/community ~/Louvain_input/"rcmOrdered_${name}.bin" -c $cache -l -1 -v -q 0.0001 > ./CE_Louvain_V5_1/graph.tree 2> "./CE_Louvain_V5_1/rcm_${name}_res.txt"
 rm ./CE_Louvain_V5_1/graph.tree
 ./CE_Louvain_V5/community ~/Louvain_input/"RandomShuffle_${name}.bin" -c $cache -l -1 -v -q 0.0001 > ./CE_Louvain_V5/graph.tree 2> "./CE_Louvain_V5/${name}_res.txt"
 rm ./CE_Louvain_V5/graph.tree

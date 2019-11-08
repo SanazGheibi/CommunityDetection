@@ -2,8 +2,9 @@
 name=$1
 path=$2  #path to current folder 
 dpath=$3 #path to Louvain_input folder (datasets) 
-n=$4
-#sample use: ./nIterativeRuns.sh amazon . ~ 10
+cache=$4 #cache size in MBs 
+n=$5
+#sample use: ./nIterativeRuns.sh amazon . ~ 4 10
 #Here, unlike iterativeRuns.sh, the preordering time is not included in the overall runtime (of one run)
 echo "Code: CE_Louvain_V5_1"
 echo "dataset: ${name}"
@@ -12,7 +13,7 @@ echo -n "" > "${path}"/nMod.txt
 for ((i=1; i <= $n; i++)); do
 	echo -n "" > "${path}"/runtimes.txt
 	echo -n "" > "${path}"/bc.txt
-	"${path}"/community "${dpath}"/Louvain_input/"rcmOrdered_${name}.bin" -l -1 -v  -q 0.001 > "${path}"/graph.tree 2> "${path}"/res.txt
+	"${path}"/community "${dpath}"/Louvain_input/"rcmOrdered_${name}.bin" -c $cache -l -1 -v  -q 0.001 > "${path}"/graph.tree 2> "${path}"/res.txt
 	grep 'duration' "${path}"/res.txt >> "${path}"/runtimes.txt
 	grep 'finalModularity' "${path}"/res.txt > "${path}"/mod_info.txt
 	grep 'lastLevel' "${path}"/res.txt > "${path}"/level_info.txt
@@ -22,7 +23,7 @@ for ((i=1; i <= $n; i++)); do
 
 	stop=0 #run for at least a seond iteration
 	while [  ${stop} -lt 1 ]; do
-	    "${path}"/community "${dpath}"/Louvain_input/"rcmOrdered_${name}.bin" -p "${path}"/comm.txt -l -1 -v -q 0.001 > "${path}"/graph.tree 2> "${path}"/res.txt
+	    "${path}"/community "${dpath}"/Louvain_input/"rcmOrdered_${name}.bin" -p "${path}"/comm.txt -c $cache -l -1 -v -q 0.001 > "${path}"/graph.tree 2> "${path}"/res.txt
 	    grep 'duration' "${path}"/res.txt >> "${path}"/runtimes.txt
 	    grep 'finalModularity' "${path}"/res.txt > "${path}"/mod_info.txt
 	    grep 'stopIterating' "${path}"/res.txt > "${path}"/stop_info.txt

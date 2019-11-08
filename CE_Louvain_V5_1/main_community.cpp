@@ -29,7 +29,7 @@
 #include "community.h"
 
 //#define W  1048576
-#define W 4194304
+//#define W 4194304
 //#define W 200
 
 using namespace std;
@@ -44,6 +44,10 @@ int display_level = -2;
 int k1 = 16;
 
 bool verbose = false;
+
+//sanaz: cache size variable added
+long W = 1048576;
+int coef = 1; //multiple of W (size of cache in MB)
 
 void
 usage(char *prog_name, const char *more) {
@@ -93,6 +97,10 @@ parse_args(int argc, char **argv) {
       case 'v':
 	verbose=true;
 	break;
+      case 'c': //added by sanaz
+	coef = atoi(argv[i+1]);
+	i++;
+	break;
       default:
 	usage(argv[0], "Unknown option\n");
       }
@@ -118,6 +126,7 @@ main(int argc, char **argv) {
   srand(time(NULL)+getpid());
 
   parse_args(argc, argv);
+  W = coef * W; 
   clock_t time_begin, time_end;
   time_begin = clock();
   if (verbose)
