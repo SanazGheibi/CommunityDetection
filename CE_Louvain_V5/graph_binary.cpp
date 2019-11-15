@@ -160,8 +160,6 @@ Graph::check_symmetry() {
 
 void
 Graph::display_binary(char *outfile) {
-  cerr << "float - double mismatch between hierarchy and community phases. To be fixed later" << endl;
-  exit(EXIT_FAILURE);
   ofstream foutput;
   foutput.open(outfile ,fstream::out | fstream::binary);
 
