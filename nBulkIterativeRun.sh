@@ -1,20 +1,23 @@
 #!/bin/bash
-n=10
-cache=4 #size of cache in MBs
+path=$1  #path to current folder
+dpath=$2 #path to Louvain_input folder (datasets)
+cache=$3 #cache size in MBs 
+n=$4
+#sample use: ./nBulkIterativeRun.sh . ~ 4 10
 #Each code is ran n times and mean runtimes and modularities are reported
-logFile="./nBulkIterativeLog.txt"
+logFile="${path}/nBulkIterativeLog.txt"
 echo -n "" > "$logFile"
 for name in amazon #net6_0.2 net6_0.4 net6_0.6 net6_0.8
 do
-./CE_Louvain_V5/nIterativeRuns.sh "${name}" ./CE_Louvain_V5 ~ ${cache} $n >> "$logFile"
-./CE_Louvain_V5_1/nIterativeRuns.sh "${name}" ./CE_Louvain_V5_1 ~ ${cache} $n >> "$logFile"
-./CE_Louvain_V5_StructuralPrune/nIterativeRuns.sh "${name}" ./CE_Louvain_V5_StructuralPrune ~ ${cache} $n >> "$logFile"
-./Louvain_seq/nIterativeRuns.sh RandomShuffle "${name}" ./Louvain_seq ~ $n >> "$logFile"
-./Louvain_seq/nIterativeRuns.sh rcmOrdered "${name}" ./Louvain_seq ~ $n >> "$logFile"
-./Louvain_seq/nIterativeRuns.sh uscOrdered "${name}" ./Louvain_seq ~ $n >> "$logFile"
-./Louvain_updated/nIterativeRuns.sh "${name}" ./Louvain_updated ~ $n >> "$logFile"
-./MoveFastLouvian/nIterativeRuns.sh "${name}" ./MoveFastLouvian ~ $n >> "$logFile"
-./MoveFast_seq/nIterativeRuns.sh RandomShuffle "${name}" ./MoveFast_seq ~ $n >> "$logFile"
-./MoveFast_seq/nIterativeRuns.sh rcmOrdered "${name}" ./MoveFast_seq ~ $n >> "$logFile"
-./MoveFast_seq/nIterativeRuns.sh uscOrdered "${name}" ./MoveFast_seq ~ $n >> "$logFile"
+"${path}"/CE_Louvain_V5/nIterativeRuns.sh "${name}" "${path}"/CE_Louvain_V5 ${dpath} ${cache} $n >> "$logFile"
+"${path}"/CE_Louvain_V5_1/nIterativeRuns.sh "${name}" "${path}"/CE_Louvain_V5_1 ${dpath} ${cache} $n >> "$logFile"
+"${path}"/CE_Louvain_V5_StructuralPrune/nIterativeRuns.sh "${name}" "${path}"/CE_Louvain_V5_StructuralPrune ${dpath} ${cache} $n >> "$logFile"
+"${path}"/Louvain_seq/nIterativeRuns.sh RandomShuffle "${name}" "${path}"/Louvain_seq ${dpath} $n >> "$logFile"
+"${path}"/Louvain_seq/nIterativeRuns.sh rcmOrdered "${name}" "${path}"/Louvain_seq ${dpath} $n >> "$logFile"
+"${path}"/Louvain_seq/nIterativeRuns.sh uscOrdered "${name}" "${path}"/Louvain_seq ${dpath} $n >> "$logFile"
+"${path}"/Louvain_updated/nIterativeRuns.sh "${name}" "${path}"/Louvain_updated ${dpath} $n >> "$logFile"
+"${path}"/MoveFastLouvian/nIterativeRuns.sh "${name}" "${path}"/MoveFastLouvian ${dpath} $n >> "$logFile"
+"${path}"/MoveFast_seq/nIterativeRuns.sh RandomShuffle "${name}" "${path}"/MoveFast_seq ${dpath} $n >> "$logFile"
+"${path}"/MoveFast_seq/nIterativeRuns.sh rcmOrdered "${name}" "${path}"/MoveFast_seq ${dpath} $n >> "$logFile"
+"${path}"/MoveFast_seq/nIterativeRuns.sh uscOrdered "${name}" "${path}"/MoveFast_seq ${dpath} $n >> "$logFile"
 done
