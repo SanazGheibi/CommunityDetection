@@ -367,7 +367,7 @@ int main(int argc, char** argv)
 	    delete[] newNodeMap;*/
     }
     avgTime /= runs;
-    printf("average runtime over %d runs : %lf \n", runs, avgTime);
+    printf("\naverage runtime over %d runs : %lf \n", runs, avgTime);
 
     return 0;
 }

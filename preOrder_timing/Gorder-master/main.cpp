@@ -67,9 +67,9 @@ int main(int argc, char* argv[]){
 		start=clock();
 		g.readGraph(filename);
 		g.Transform();
-		cout << name << " readGraph is complete." << endl;
+		//cout << name << " readGraph is complete." << endl;
 		end=clock();
-		cout << "Time Cost: " << (double)(end-start)/CLOCKS_PER_SEC << endl;
+		//cout << "Time Cost: " << (double)(end-start)/CLOCKS_PER_SEC << endl;
 
 		start=clock();
 		vector<int> order;
@@ -80,15 +80,13 @@ int main(int argc, char* argv[]){
 		avgTime += (double)(end-start)/CLOCKS_PER_SEC;
 
 		if(i == 0){
-			cout << "Begin Output the Reordered Graph" << endl;
+			//cout << "Begin Output the Reordered Graph" << endl;
 			g.PrintReOrderedGraph(order);
-			cout << endl;
+			//cout << endl;
 		}
 	}
 	avgTime /= n; 
-	cout << "average time over " << n << " runs: " << avgTime << endl;
-
-
+	cout << "\naverage time over " << n << " runs: " << avgTime << endl;
 
 }
 

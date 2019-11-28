@@ -48,9 +48,9 @@ int main(int argc, char* argv[]){
 
 		start=clock();
 		g.readGraph(filename);
-		cout << "Graph reading complete..." << endl;
+		//cout << "Graph reading complete..." << endl;
 		end=clock();
-		cout << "Time Cost: " << (double)(end-start)/CLOCKS_PER_SEC << endl;
+		//cout << "Time Cost: " << (double)(end-start)/CLOCKS_PER_SEC << endl;
 
 		start=clock();
 		vector<int> order;
@@ -68,7 +68,7 @@ int main(int argc, char* argv[]){
 		//cout << endl;	
 	}
 	avgTime /= n; 
-	cout << "average time over " << n << " runs (including the sorting overhead): " << avgTime << endl;
+	cout << "\naverage time over " << n << " runs (including the sorting overhead): " << avgTime << endl;
 
 }
 
