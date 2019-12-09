@@ -56,6 +56,7 @@ for ((i=1; i <= $n; i++)); do
 	rm "${path}"/runtimes.txt
 	rm "${path}"/mod_info.txt
 	rm "${path}"/stop_info.txt
+	rm "${path}"/reordered.bin
 done
 #compute mean Pruning time
 echo -n "" > "${path}"/bc.txt

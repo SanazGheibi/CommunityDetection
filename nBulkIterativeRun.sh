@@ -5,9 +5,9 @@ cache=$3 #cache size in MBs
 n=$4
 #sample use: ./nBulkIterativeRun.sh . ~ 4 10
 #Each code is ran n times and mean runtimes and modularities are reported
-logFile="${path}/nBulkIterativeLog.txt"
+logFile="${path}/uk2005_3BulkIterativeLog.txt"
 echo -n "" > "$logFile"
-for name in amazon #net6_0.2 net6_0.4 net6_0.6 net6_0.8
+for name in uk2005
 do
 "${path}"/CE_Louvain_V5/nIterativeRuns.sh "${name}" "${path}"/CE_Louvain_V5 ${dpath} ${cache} $n >> "$logFile"
 "${path}"/CE_Louvain_V5_1/nIterativeRuns.sh "${name}" "${path}"/CE_Louvain_V5_1 ${dpath} ${cache} $n >> "$logFile"

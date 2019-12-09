@@ -50,4 +50,4 @@ rm "${path}"/res.txt
 rm "${path}"/runtimes.txt
 rm "${path}"/mod_info.txt
 rm "${path}"/stop_info.txt
-
+rm "${path}"/reordered.bin

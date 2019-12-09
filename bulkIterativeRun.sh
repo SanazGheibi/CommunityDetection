@@ -3,9 +3,9 @@ path=$1  #path to current folder
 dpath=$2 #path to Louvain_input folder (datasets)
 cache=$3 #cache size in MBs
 #sample use: ./bulkIterativeRun.sh . ~ 4
-logFile="${path}/bulkIterativeLog.txt"
+logFile="${path}/uk_bulkIterativeLog.txt"
 echo -n "" > "$logFile"
-for name in net6_0.2 net6_0.4 net6_0.6 net6_0.8
+for name in uk2005 
 do
 "${path}"/CE_Louvain_V5/iterativeRuns.sh "${name}" "${path}"/CE_Louvain_V5 ${dpath} ${cache} >> "$logFile"
 "${path}"/CE_Louvain_V5_1/iterativeRuns.sh "${name}" "${path}"/CE_Louvain_V5_1 ${dpath} ${cache} >> "$logFile"

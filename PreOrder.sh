@@ -1,6 +1,6 @@
 #!/bin/bash
 cache=1048576
-for name in amazon IMDB liveJournal dblp
+for name in uk2005
 do
 ./RandomShuffle/RSH ./Data/"${name}.txt" > "./RandomShuffle/${name}_log.txt"
 ./Louvain_updated/convert -i ./Data/"${name}_RSH.txt" -o ~/Louvain_input/"RandomShuffle_${name}.bin" -r > "./Louvain_updated/${name}0_log.txt"
