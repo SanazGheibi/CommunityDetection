@@ -5,7 +5,7 @@ cache=$3 #cache size in MBs
 #sample use: ./bulkIterativeRun.sh . ~ 4
 logFile="${path}/uk_bulkIterativeLog.txt"
 echo -n "" > "$logFile"
-for name in uk2005 
+for name in liveJournal 
 do
 "${path}"/CE_Louvain_V5/iterativeRuns.sh "${name}" "${path}"/CE_Louvain_V5 ${dpath} ${cache} >> "$logFile"
 "${path}"/CE_Louvain_V5_1/iterativeRuns.sh "${name}" "${path}"/CE_Louvain_V5_1 ${dpath} ${cache} >> "$logFile"

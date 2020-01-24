@@ -30,8 +30,8 @@
 
 //#define W 200
 
-//#define T 10
-#define T 3 
+#define T 10
+//#define T 3 
 
 using namespace std;
 
@@ -223,7 +223,7 @@ main(int argc, char **argv) {
 
   //sanaz: information printed out will be used in later iterations (and in the corresponding script)
   cerr << "lastLevel: " << (level-1) << endl;
-  if(new_mod-init_mod < precision)
+  if(new_mod-init_mod < 0.01)
 	cerr << "stopIterating: 1" << endl;
   else
 	cerr << "stopIterating: 0" << endl;

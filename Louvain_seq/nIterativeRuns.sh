@@ -11,19 +11,23 @@ echo "dataset: ${preOrder}_${name}"
 echo -n "" > "${path}"/nRuntime.txt
 echo -n "" > "${path}"/nMod.txt
 for ((i=1; i <= $n; i++)); do
+	#echo "run number: ${i}"
 	echo -n "" > "${path}"/runtimes.txt
 	echo -n "" > "${path}"/bc.txt
 	"${path}"/community "${dpath}"/Louvain_input/"${preOrder}_${name}.bin" -l -1 -v  -q 0.001 > "${path}"/graph.tree 2> "${path}"/res.txt
+	#cat "${path}"/res.txt
 	grep 'duration' "${path}"/res.txt >> "${path}"/runtimes.txt
 	grep 'finalModularity' "${path}"/res.txt > "${path}"/mod_info.txt
 	grep 'lastLevel' "${path}"/res.txt > "${path}"/level_info.txt
 	read -r pass level < "${path}"/level_info.txt
 	"${path}"/hierarchy "${path}"/graph.tree -l $level > "${path}"/comm.txt
+	#echo "done with hierarchy"
 	rm "${path}"/graph.tree
 
 	stop=0 #run for at least a seond iteration
 	while [  ${stop} -lt 1 ]; do
 	    "${path}"/community "${dpath}"/Louvain_input/"${preOrder}_${name}.bin" -p "${path}"/comm.txt -l -1 -v -q 0.001 > "${path}"/graph.tree 2> "${path}"/res.txt
+	    #cat "${path}"/res.txt
 	    grep 'duration' "${path}"/res.txt >> "${path}"/runtimes.txt
 	    grep 'finalModularity' "${path}"/res.txt > "${path}"/mod_info.txt
 	    grep 'stopIterating' "${path}"/res.txt > "${path}"/stop_info.txt
@@ -31,6 +35,7 @@ for ((i=1; i <= $n; i++)); do
 	    grep 'lastLevel' "${path}"/res.txt > "${path}"/level_info.txt
 	    read -r pass level < "${path}"/level_info.txt
 	    "${path}"/hierarchy "${path}"/graph.tree -l $level > "${path}"/comm.txt
+	    #echo "done with hierarchy" 
 	    rm "${path}"/graph.tree
 	done
 

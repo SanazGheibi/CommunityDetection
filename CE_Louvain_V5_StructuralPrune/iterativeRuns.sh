@@ -8,7 +8,7 @@ echo "Code: CE_Louvain_V5_StructuralPrune"
 echo "dataset: ${name}"
 echo -n "" > "${path}"/runtimes.txt
 echo -n "" > "${path}"/bc.txt
-"${path}"/community "${dpath}"/Louvain_input/"RandomShuffle_${name}.bin" -r "${path}"/reordered.bin -c $cache -l -1 -v -q 0.001 > "${path}"/graph.tree 2> "${path}"/res.txt
+"${path}"/community "${dpath}"/Louvain_input/"RandomShuffle_${name}.bin" -r "${path}"/reordered.bin -c $cache -l -1 -v -q 0.0001 > "${path}"/graph.tree 2> "${path}"/res.txt
 grep 'pruning' "${path}"/res.txt >> "${path}"/runtimes.txt
 grep 'pre_ordering' "${path}"/res.txt >> "${path}"/runtimes.txt
 cat "${path}"/runtimes.txt 
@@ -21,7 +21,7 @@ rm "${path}"/graph.tree
 
 stop=0 #run for at least a seond iteration
 while [  ${stop} -lt 1 ]; do
-    "${path}"/community "${path}"/reordered.bin -p "${path}"/comm.txt -c $cache -l -1 -v -q 0.001 > "${path}"/graph.tree 2> "${path}"/res.txt
+    "${path}"/community "${path}"/reordered.bin -p "${path}"/comm.txt -c $cache -l -1 -v -q 0.0001 > "${path}"/graph.tree 2> "${path}"/res.txt
     grep 'duration' "${path}"/res.txt >> "${path}"/runtimes.txt
     grep 'finalModularity' "${path}"/res.txt > "${path}"/mod_info.txt
     grep 'stopIterating' "${path}"/res.txt > "${path}"/stop_info.txt
