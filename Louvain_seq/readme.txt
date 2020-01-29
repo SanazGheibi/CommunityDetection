@@ -58,7 +58,6 @@ In this specific case, the convertion step must also use the -w option.
 The program can also start with any given partition using -p option
 ./community graph.bin -p graph.part -v
 
-
 3. Displays information on the tree structure (number of hierarchical
 levels and nodes per level):
 ./hierarchy graph.tree
