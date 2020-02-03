@@ -44,11 +44,6 @@ Graph::Graph(char *filename, char *filename_w, int type) {
   links.resize(nb_links);
   finput.read((char *)(&links[0]), (long)nb_links*4);  
 
-  //sanaz: 
-  validTo.resize(nb_nodes);
-  for(int i=0; i<nb_nodes; i++)
-	validTo[i] = degrees[i];
-
   // IF WEIGHTED : read weights: 4 bytes for each link (each link is counted twice)
   weights.resize(0);
   total_weight=0;

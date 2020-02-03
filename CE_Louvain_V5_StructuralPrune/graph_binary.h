@@ -42,8 +42,6 @@ class Graph {
   vector<unsigned long> degrees;
   vector<unsigned int> links;
   vector<double> weights;
-  //sanaz:
-  vector<unsigned long> validTo;
 
   Graph();
 
@@ -78,28 +76,17 @@ class Graph {
 
   //sanaz
   void print_graph();
-  inline unsigned int nb_neighbors_original(unsigned int node);
 };
 
 //sanaz
 inline unsigned int
-Graph::nb_neighbors_original(unsigned int node) {
+Graph::nb_neighbors(unsigned int node) {
   assert(node>=0 && node<nb_nodes);
 
   if (node==0)
     return degrees[0];
   else
     return degrees[node]-degrees[node-1];
-}
-
-inline unsigned int
-Graph::nb_neighbors(unsigned int node) {
-  assert(node>=0 && node<nb_nodes);
-
-  if (node==0)
-    return validTo[0];
-  else
-    return validTo[node]-degrees[node-1];
 }
 
 inline double
