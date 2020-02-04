@@ -322,9 +322,7 @@ Community::miniBatch_assign(long W){
         	    diff = deg - max_deg;
          	    max_deg = deg;
       		}
-      		long tmp = sizeof(int) + sizeof(unsigned long) + sizeof(double) + deg * sizeof(unsigned int); //Accounting for n2c, g.degrees[], neigh_weights[] and g.links[]
-		if(g.weights.size() != 0)
-			tmp += deg * sizeof(double); //Accounting for g.weights only if the graph is weighted
+		long tmp = sizeof(int) + sizeof(unsigned long) + deg * (sizeof(unsigned int) + sizeof(double)); //Accounting for n2c, g.degrees[], g.links[] and g.weights[]
       		if(sum + tmp + diff *(long)(sizeof(double)+sizeof(unsigned int)) >= W)
         	   break;
       		sum += tmp + diff * (sizeof(double)+sizeof(unsigned int));
@@ -397,9 +395,7 @@ Community::update_sum(int curr, int* max_deg, long sum){
          diff = deg - *max_deg;
          *max_deg = deg; 
        }
-       long tmp = sizeof(int) + sizeof(unsigned long) + sizeof(double) + deg * sizeof(unsigned int); //Accounting for n2c, g.degrees[], neigh_weights[] and g.links[]
-       if(g.weights.size() != 0)
-	      tmp += deg * sizeof(double); //Accounting for g.weights only if the graph is weighted
+       long tmp = sizeof(int) + sizeof(unsigned long) + deg * (sizeof(unsigned int) + sizeof(double)); //Accounting for n2c, g.degrees[], g.links[] and g.weights[]
        sum += tmp + diff * (sizeof(double)+sizeof(unsigned int));
        return sum; 
 }
