@@ -169,7 +169,7 @@ main(int argc, char **argv) {
 	  //on the transformed graph
 	  if(reorder_file != NULL){
 		join_begin=clock();
-		Graph full_g = joinG(init_links);
+		Graph full_g = c.joinG(init_links);
 		join_end=clock();
 		cerr << "join time: " << (double)(join_end-join_begin)/CLOCKS_PER_SEC << " sec." << endl;
 	  	full_g.display_binary(reorder_file);

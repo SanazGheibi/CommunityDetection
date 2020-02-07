@@ -805,7 +805,7 @@ Graph
 Community::joinG(unsigned long nb_links) {
  
   //sanaz: fix the one-way links between low degree and high degree nodes
-  vector<vector<pair<int, double> > > comm_lowNeighs(final); //keeping track of low degree neighbors of communities 
+  vector<vector<pair<int, double> > > comm_lowNeighs(size); //keeping track of low degree neighbors of communities 
   for(int i=boundary; i<total_size; i++){
       int deg = g.nb_neighbors(i);
       pair<vector<unsigned int>::iterator, vector<float>::iterator> p = g.neighbors(i);
@@ -832,7 +832,7 @@ Community::joinG(unsigned long nb_links) {
   }
 
   unsigned long linkInd=0;
-  for(unsigned int i=0; i<g2.nb_nodes; i++){
+  for(int i=0; i<total_size; i++){
 	int deg = g.nb_neighbors(i);
 	g2.degrees[i]=(i==0)?deg:g2.degrees[i-1]+deg;
 	pair<vector<unsigned int>::iterator, vector<float>::iterator> p = g.neighbors(i);
@@ -846,7 +846,7 @@ Community::joinG(unsigned long nb_links) {
 	//take care of the low-degree neighbors of the high-degree nodes
 	if(i<boundary){
 	    g2.degrees[i]+=comm_lowNeighs[i].size();
-	    for(int j=0; j<comm_lowNeighs[i].size(); j++){
+	    for(unsigned int j=0; j<comm_lowNeighs[i].size(); j++){
 		    g2.links[linkInd]=comm_lowNeighs[i][j].first;
 		    if(wGraph){
 			g2.weights[linkInd]=comm_lowNeighs[i][j].second;

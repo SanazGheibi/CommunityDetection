@@ -12,11 +12,11 @@ echo -n "" > "${path}"/bc.txt
 cat "${path}"/res.txt
 grep 'pruning' "${path}"/res.txt >> "${path}"/runtimes.txt
 grep 'pre_ordering' "${path}"/res.txt >> "${path}"/runtimes.txt
+grep 'join' "${path}"/res.txt >> "${path}"/runtimes.txt
 cat "${path}"/runtimes.txt
 #cat "${path}"/mod_info.txt 
 grep 'duration' "${path}"/res.txt >> "${path}"/runtimes.txt
 grep 'finalModularity' "${path}"/res.txt > "${path}"/mod_info.txt
-cat "${path}"/mod_info.txt
 grep 'lastLevel' "${path}"/res.txt > "${path}"/level_info.txt
 read -r pass level < "${path}"/level_info.txt
 "${path}"/hierarchy "${path}"/graph.tree -l $level > "${path}"/comm.txt
@@ -27,9 +27,7 @@ while [  ${stop} -lt 1 ]; do
     "${path}"/community "${path}"/reordered.bin -p "${path}"/comm.txt -c $cache -l -1 -v -q 0.0001 > "${path}"/graph.tree 2> "${path}"/res.txt
     cat "${path}"/res.txt
     grep 'duration' "${path}"/res.txt >> "${path}"/runtimes.txt
-    #cat "${path}"/runtimes.txt
     grep 'finalModularity' "${path}"/res.txt > "${path}"/mod_info.txt
-    cat "${path}"/mod_info.txt
     grep 'stopIterating' "${path}"/res.txt > "${path}"/stop_info.txt
     read -r pass stop < "${path}"/stop_info.txt
     grep 'lastLevel' "${path}"/res.txt > "${path}"/level_info.txt
@@ -39,8 +37,6 @@ while [  ${stop} -lt 1 ]; do
 done
 
 echo -e "\n"
-cat "${path}"/runtimes.txt
-
 echo -e "sum = 0.0\n" >> "${path}"/bc.txt
 while read -r col1 col2 col3 col4
 do
@@ -49,7 +45,6 @@ done < "${path}"/runtimes.txt
 echo -e "print sum\n" >> "${path}"/bc.txt
 s=`cat "${path}"/bc.txt | bc -l`
 echo "overall runtime: $s" 
-cat "${path}"/mod_info.txt
 echo -e "\n"
 
 #final clean up 
