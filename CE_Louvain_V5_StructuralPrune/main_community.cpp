@@ -151,6 +151,7 @@ main(int argc, char **argv) {
 
   //sanaz: run ABFS preodering and pruning only in the begining of an iterative approach
   if (filename_part == NULL){  
+          unsigned long init_links = c.g.nb_links;
 	  //sanaz: can't put it inside constructor. There may exist initial partitions. 
 	  clock_t time_begin3, time_end3;
 	  time_begin3 = clock();
@@ -159,15 +160,20 @@ main(int argc, char **argv) {
 	  cerr << "pruning time: " << (double)(time_end3-time_begin3)/CLOCKS_PER_SEC << " sec." << endl;
 
 	  //sanaz:
-	  clock_t preOrder_begin, preOrder_end;
+	  clock_t preOrder_begin, preOrder_end, join_begin, join_end;
 	  preOrder_begin=clock();
 	  c.transform(W);
 	  preOrder_end=clock();
 	  cerr << "pre_ordering time: " << (double)(preOrder_end-preOrder_begin)/CLOCKS_PER_SEC << " sec." << endl;
           //sanaz: in order for the iterative method to work correctly, we should produced a new .bin file based 
 	  //on the transformed graph
-	  if(reorder_file != NULL)
-	  	c.g.display_binary(reorder_file);
+	  if(reorder_file != NULL){
+		join_begin=clock();
+		Graph full_g = joinG(init_links);
+		join_end=clock();
+		cerr << "join time: " << (double)(join_end-join_begin)/CLOCKS_PER_SEC << " sec." << endl;
+	  	full_g.display_binary(reorder_file);
+	  }
   }
 
   time_begin2 = clock();

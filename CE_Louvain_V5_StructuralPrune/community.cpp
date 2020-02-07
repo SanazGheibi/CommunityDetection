@@ -800,6 +800,65 @@ Community::partition2graph_binary_l0() {
   return g2;
 }
 //---------------------------------------------------------------------------------
+//sanaz: function added by me to bring back the links from high to low degree nodes
+Graph
+Community::joinG(unsigned long nb_links) {
+ 
+  //sanaz: fix the one-way links between low degree and high degree nodes
+  vector<vector<pair<int, double> > > comm_lowNeighs(final); //keeping track of low degree neighbors of communities 
+  for(int i=boundary; i<total_size; i++){
+      int deg = g.nb_neighbors(i);
+      pair<vector<unsigned int>::iterator, vector<float>::iterator> p = g.neighbors(i);
+      for(int j=0; j<deg; j++){
+          int neigh = *(p.first+j);
+          double neigh_weight = (g.weights.size()==0)?1.:*(p.second+j);
+          if(neigh < boundary)
+             comm_lowNeighs[neigh].push_back(make_pair(i,neigh_weight));
+      }
+  }
+
+  // Compute weighted graph
+  Graph g2;
+  g2.nb_nodes = g.nb_nodes;
+  g2.degrees.resize(g2.nb_nodes);
+
+  g2.nb_links = nb_links;
+  g2.links.resize(nb_links);
+  g2.total_weight = (double)nb_links;
+  bool wGraph = false;
+  if(g.weights.size()!=0){
+     g2.weights.resize(nb_links);
+     wGraph = true;
+  }
+
+  unsigned long linkInd=0;
+  for(unsigned int i=0; i<g2.nb_nodes; i++){
+	int deg = g.nb_neighbors(i);
+	g2.degrees[i]=(i==0)?deg:g2.degrees[i-1]+deg;
+	pair<vector<unsigned int>::iterator, vector<float>::iterator> p = g.neighbors(i);
+	for(int j=0; j<deg; j++){
+	    g2.links[linkInd]=*(p.first+j);
+	    if(wGraph){
+		g2.weights[linkInd]=*(p.second+j);
+	    }
+	    linkInd++;
+	}
+	//take care of the low-degree neighbors of the high-degree nodes
+	if(i<boundary){
+	    g2.degrees[i]+=comm_lowNeighs[i].size();
+	    for(int j=0; j<comm_lowNeighs[i].size(); j++){
+		    g2.links[linkInd]=comm_lowNeighs[i][j].first;
+		    if(wGraph){
+			g2.weights[linkInd]=comm_lowNeighs[i][j].second;
+		    }
+		    linkInd++;		
+	    }
+	}
+    }  
+
+  return g2;
+}
+//---------------------------------------------------------------------------------
 //sanaz: W is the window size (size of LLC/fast memory in Bytes)
 bool
 Community::one_level(int W, bool level0) {

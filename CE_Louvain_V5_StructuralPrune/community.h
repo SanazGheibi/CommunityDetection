@@ -120,6 +120,7 @@ class Community {
   unsigned int neigh_comm_low(unsigned int node);
   void prune_graph(int T);
   long update_sum(int curr, int* max_deg, long sum);
+  Graph joinG(unsigned long nb_links);
 };
 
 inline void
