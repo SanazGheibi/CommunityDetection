@@ -1,0 +1,7 @@
+Code: CE_Louvain_V5
+dataset: amazon
+pre_ordering time: 0.57 sec.
+overall runtime: 15.02
+finalModularity: 0.928999
+
+

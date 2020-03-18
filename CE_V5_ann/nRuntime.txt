@@ -1,0 +1,10 @@
+overall runtime: 297.11
+overall runtime: 297.16
+overall runtime: 297.27
+overall runtime: 305.02
+overall runtime: 309.56
+overall runtime: 305.77
+overall runtime: 316.96
+overall runtime: 295.80
+overall runtime: 300.67
+overall runtime: 299.21

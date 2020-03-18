@@ -1,0 +1,128 @@
+Code: CE_Louvain_V5
+dataset: uk2005
+Begin: Sun Feb 16 19:25:34 2020
+pre_ordering time: 103 sec.
+level 0:
+  start computation: Sun Feb 16 19:28:17 2020
+  network size: 39454463 nodes, 1566054250 links, 1.56605e+09 weight.
+  modularity increased from -4.41011e-05 to 0.840375
+  end computation: Sun Feb 16 19:44:18 2020
+level 1:
+  start computation: Sun Feb 16 19:44:18 2020
+  network size: 1406083 nodes, 23087665 links, 1.56605e+09 weight.
+  modularity increased from 0.840375 to 0.974264
+  end computation: Sun Feb 16 19:44:54 2020
+level 2:
+  start computation: Sun Feb 16 19:44:54 2020
+  network size: 191977 nodes, 3264531 links, 1.55716e+09 weight.
+  modularity increased from 0.974264 to 0.979659
+  end computation: Sun Feb 16 19:45:00 2020
+level 3:
+  start computation: Sun Feb 16 19:45:00 2020
+  network size: 37513 nodes, 1261799 links, 1.55716e+09 weight.
+  modularity increased from 0.979659 to 0.979923
+  end computation: Sun Feb 16 19:45:01 2020
+level 4:
+  start computation: Sun Feb 16 19:45:01 2020
+  network size: 18419 nodes, 815217 links, 1.55716e+09 weight.
+  modularity increased from 0.979923 to 0.979929
+  end computation: Sun Feb 16 19:45:02 2020
+level 5:
+  start computation: Sun Feb 16 19:45:02 2020
+  network size: 17385 nodes, 788213 links, 1.55716e+09 weight.
+  modularity increased from 0.979929 to 0.979929
+  end computation: Sun Feb 16 19:45:03 2020
+level 6:
+  start computation: Sun Feb 16 19:45:03 2020
+  network size: 17376 nodes, 787868 links, 1.55716e+09 weight.
+  modularity increased from 0.979929 to 0.979929
+  end computation: Sun Feb 16 19:45:04 2020
+End: Sun Feb 16 19:45:04 2020
+Total duration: 1019.69 sec.
+lastLevel: 6
+stopIterating: 0
+finalModularity: 0.979929
+pre_ordering time: 103 sec.
+Total duration: 1019.69 sec.
+finalModularity: 0.979929
+*
+Begin: Sun Feb 16 19:56:39 2020
+level 0:
+  start computation: Sun Feb 16 19:58:34 2020
+  network size: 39454463 nodes, 1566054250 links, 1.56605e+09 weight.
+  modularity increased from 0.978929 to 0.979286
+  end computation: Sun Feb 16 20:12:45 2020
+level 1:
+  start computation: Sun Feb 16 20:12:45 2020
+  network size: 17376 nodes, 791560 links, 1.37052e+09 weight.
+  modularity increased from 0.979286 to 0.990097
+  end computation: Sun Feb 16 20:12:46 2020
+level 2:
+  start computation: Sun Feb 16 20:12:46 2020
+  network size: 17126 nodes, 788328 links, 1.37052e+09 weight.
+  modularity increased from 0.990097 to 0.990097
+  end computation: Sun Feb 16 20:12:47 2020
+End: Sun Feb 16 20:12:47 2020
+Total duration: 967.79 sec.
+lastLevel: 2
+stopIterating: 0
+finalModularity: 0.990097
+Total duration: 967.79 sec.
+finalModularity: 0.990097
+*
+Begin: Sun Feb 16 20:24:18 2020
+level 0:
+  start computation: Sun Feb 16 20:26:05 2020
+  network size: 39454463 nodes, 1566054250 links, 1.56605e+09 weight.
+  modularity increased from 0.979287 to 0.979289
+  end computation: Sun Feb 16 20:40:05 2020
+level 1:
+  start computation: Sun Feb 16 20:40:05 2020
+  network size: 17126 nodes, 788296 links, 1.37051e+09 weight.
+  modularity increased from 0.979289 to 0.990099
+  end computation: Sun Feb 16 20:40:06 2020
+End: Sun Feb 16 20:40:06 2020
+Total duration: 947.54 sec.
+lastLevel: 1
+stopIterating: 0
+finalModularity: 0.990099
+Total duration: 947.54 sec.
+finalModularity: 0.990099
+*
+Begin: Sun Feb 16 20:51:40 2020
+level 0:
+  start computation: Sun Feb 16 20:53:27 2020
+  network size: 39454463 nodes, 1566054250 links, 1.56605e+09 weight.
+  modularity increased from 0.979289 to 0.979289
+  end computation: Sun Feb 16 21:07:49 2020
+level 1:
+  start computation: Sun Feb 16 21:07:49 2020
+  network size: 17126 nodes, 788300 links, 1.37051e+09 weight.
+  modularity increased from 0.979289 to 0.990099
+  end computation: Sun Feb 16 21:07:50 2020
+End: Sun Feb 16 21:07:50 2020
+Total duration: 969.76 sec.
+lastLevel: 1
+stopIterating: 0
+finalModularity: 0.990099
+Total duration: 969.76 sec.
+finalModularity: 0.990099
+*
+Begin: Sun Feb 16 21:19:39 2020
+level 0:
+  start computation: Sun Feb 16 21:21:31 2020
+  network size: 39454463 nodes, 1566054250 links, 1.56605e+09 weight.
+  modularity increased from 0.979289 to 0.979289
+  end computation: Sun Feb 16 21:35:40 2020
+level 1:
+  start computation: Sun Feb 16 21:35:40 2020
+  network size: 17126 nodes, 788300 links, 1.37051e+09 weight.
+  modularity increased from 0.979289 to 0.990099
+  end computation: Sun Feb 16 21:35:40 2020
+End: Sun Feb 16 21:35:40 2020
+Total duration: 961.29 sec.
+lastLevel: 1
+stopIterating: 0
+finalModularity: 0.990099
+Total duration: 961.29 sec.
+finalModularity: 0.990099

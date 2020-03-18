@@ -1,0 +1,7 @@
+Code: CE_Louvain_V5
+dataset: liveJournal
+pre_ordering time: 7.9 sec.
+overall runtime: 305.59
+finalModularity: 0.728115
+
+

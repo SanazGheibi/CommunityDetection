@@ -1,0 +1,22 @@
+Code: CE_Louvain_V5
+dataset: liveJournal
+pre_ordering time: 7.81 sec.
+pre_ordering time: 7.81 sec.
+Total duration: 113.51 sec.
+Total duration: 102.47 sec.
+Total duration: 93.89 sec.
+Total duration: 95.29 sec.
+Total duration: 95.42 sec.
+finalModularity: 0.712743
+finalModularity: 0.725607
+finalModularity: 0.728115
+finalModularity: 0.729572
+finalModularity: 0.730096
+overall runtime: 508.39
+finalModularity: 0.712743
+finalModularity: 0.725607
+finalModularity: 0.728115
+finalModularity: 0.729572
+finalModularity: 0.730096
+
+
