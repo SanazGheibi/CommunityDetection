@@ -45,6 +45,7 @@ int k1 = 16;
 //sanaz:
 char *reorder_file = NULL;
 double t_imp = 0.001;
+int TK = 0;
 
 bool verbose = false;
 
@@ -105,6 +106,10 @@ parse_args(int argc, char **argv) {
 	coef = atoi(argv[i+1]);
 	i++;
 	break;
+      case 't': //added by sanaz
+        TK = atoi(argv[i+1]);
+        i++;
+        break;
       //sanaz: the re-ordered graph should be written out and be used in next iterations
       case 'r':
 	reorder_file = argv[i+1];
@@ -182,7 +187,7 @@ main(int argc, char **argv) {
     bool level0 = (level == 0);
     if(filename_part!=NULL)
 	level0 = false;
-    improvement = c.one_level(W, level0, t_imp);
+    improvement = c.one_level(W, level0, t_imp, TK);
     new_mod = c.modularity();
     if (++level==display_level)
       g.display();

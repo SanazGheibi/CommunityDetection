@@ -72,6 +72,10 @@ after the ABFS reodering. This is needed, because if we want to feed the
 community assignments into another iterations, node IDs should match
 ./community graph.bin -r reordered.bin -c 4 -l -1 -v -q 0.0001 > graph.tree
 
+New option t added by sanaz:
+To input the number of threshold steps. 
+./community graph.bin -t 5 -c 4 -l -1 -v -q 0.0001 > graph.tree
+
 3. Displays information on the tree structure (number of hierarchical
 levels and nodes per level):
 ./hierarchy graph.tree

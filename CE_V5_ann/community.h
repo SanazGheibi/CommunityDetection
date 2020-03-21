@@ -104,7 +104,7 @@ class Community {
 
   // compute communities of the graph for one level
   // return true if some nodes have been moved
-  bool one_level(int W, bool level0, double t_imp);
+  bool one_level(int W, bool level0, double t_imp, int TK);
   
   //sanaz:
   int size_estimate(int start, long W);

@@ -574,7 +574,7 @@ Community::partition2graph_binary() {
 
 //sanaz: W is the window size (size of LLC/fast memory in Bytes)
 bool
-Community::one_level(int W, bool level0, double t_imp) {  
+Community::one_level(int W, bool level0, double t_imp, int TK) {  
   bool improvement=false ;
   int nb_moves;
 
@@ -591,94 +591,85 @@ Community::one_level(int W, bool level0, double t_imp) {
   //sanaz: for keepint track of the range of the node indices used in each round 
   int start = 0; 
   int end = -1; 
-  vector<arrayQueue<int>*> blocks; // vector of queues
-  //assumption: at every moment, each node exists in at most 1 queue (queues are filled with nodes of the corresponding community only)
-  vector<int> insider(size);
-  for(int i=0; i<size; i++)
-	insider[i] = -1; //when node i is added to queue j, insider[i] = j (j = 0, ..., size-1)
-  
-  int q_index= 0; 
+
+  // repeat while 
+  //   there is an improvement of modularity
+  //   or there is an improvement of modularity greater than a given epsilon 
+  //   or a predefined number of pass have been done
+
+  //sanaz:the do-while loop is added by me
+  arrayQueue<int> Q(max_batchSize);
+  int* insider = new int[size];
   do{
-          start = end+1;
-          end = size_estimate(start, W);
-	  blocks.push_back(new arrayQueue<int> (max_batchSize));	 
-          for(int j=start; j<=end; j++){
-               //Q.push(j);
-               blocks[q_index]->push(j);
-               insider[j] = q_index;
-          }
-          //blocks.push_back(Q);
-          q_index++;
+	  start = end+1; 
+	  end = size_estimate(start, W);
+          for(int tCount=TK; tCount>=0; tCount--){
+		  double THR = TK*t_imp;
+		  for(int j=start; j<=end; j++){
+		       Q.push(j);
+		       insider[j] = 1;
+		  }
+		  nb_moves = 0;
+		  //experiment with doing the full sweep in the middle:
+		  /*if(start >= size/2 && middleReached == 0){
+		     middleReached = 1;
+		     singleFullSweep();
+		  }*/          
 
-  }while(end < size-1);
+		  do {
+			      int node = Q.front();
+			      int node_comm = n2c[node];
+			      double w_degree = g.weighted_degree(node);
 
-  int tCount = 0; 
-  double THR = 0;
-  int active = 0;  
+			      // computation of all neighboring communities of current node
+			      neigh_comm(node);
+			      // remove node from its current community
+			      remove(node, node_comm, neigh_weight[node_comm]);
 
-  nb_moves = 0; 
-  do{
-	active = 0; 
+			      // compute the nearest community for node
+			      // default choice for future insertion is the former community
+			      int best_comm        = node_comm;
+			      double best_nblinks  = 0.;
+			      double best_increase = THR; 
+			      for (unsigned int i=0 ; i<neigh_last ; i++) {
+				double increase = modularity_gain(node, neigh_pos[i], neigh_weight[neigh_pos[i]], w_degree);                 
+				if (increase>best_increase) {
+				  best_comm     = neigh_pos[i];
+				  best_nblinks  = neigh_weight[neigh_pos[i]];
+				  best_increase = increase;     
+				}
+			      }
 
-	for(unsigned int blockID = 0; blockID < blocks.size(); blockID++){
-		if(blocks[blockID]->size() == 0)
-			continue;
-		active++;
-                int node = blocks[blockID]->front();
-		
-                int node_comm = n2c[node];
-		double w_degree = g.weighted_degree(node);
+			      // insert node in the nearest community
+			      insert(node, best_comm, best_nblinks);
+										    
+			      Q.pop();
+			      insider[node] = 0; 	     
+			      if(best_comm!=node_comm){
+				//add neighbors to the queue, whose community != best_community
+				//assumption: the neighbor oder here is the same as what appears in neigh_pos[] array
+				pair<vector<unsigned int>::iterator, vector<float>::iterator> p = g.neighbors(node);
+				unsigned int deg = g.nb_neighbors(node);
+				for(unsigned int i=0; i<deg ; i++){
+				      int neigh = *(p.first+i);
+				      if(neigh < start || neigh > end)
+					  continue;
+				      int n_comm = n2c[neigh];
+				      if(n_comm != best_comm && insider[neigh] == 0){
+					  Q.push(neigh);
+					  insider[neigh] = 1;
+				       }
+				}
+				nb_moves++;
+			      }
 
-		// computation of all neighboring communities of current node
-		neigh_comm(node);
-		// remove node from its current community
-		remove(node, node_comm, neigh_weight[node_comm]);
+		  } while (!Q.empty());
+		  if (nb_moves>0)
+		     improvement=true;
+         }
+     
+  } while(end < size-1);
 
-	        // compute the nearest community for node
-		// default choice for future insertion is the former community
-		int best_comm        = node_comm;
-		double best_nblinks  = 0.;
-		double best_increase = 0.;
-		for (unsigned int i=0 ; i<neigh_last ; i++) {
-			double increase = modularity_gain(node, neigh_pos[i], neigh_weight[neigh_pos[i]], w_degree);                 
-      			if (increase>best_increase) {
-			  best_comm     = neigh_pos[i];
-			  best_nblinks  = neigh_weight[neigh_pos[i]];
-			  best_increase = increase;     
-			}
-		}
-
-		// insert node in the nearest community
-		insert(node, best_comm, best_nblinks);
-                                         		                    
-		blocks[blockID]->pop();
-                insider[node] = -1; 	     
-		if(best_comm!=node_comm){
-		        //add neighbors to the queue, whose community != best_community
-		        //assumption: the neighbor oder here is the same as what appears in neigh_pos[] array
-			pair<vector<unsigned int>::iterator, vector<float>::iterator> p = g.neighbors(node);
-			unsigned int deg = g.nb_neighbors(node);
-			for(unsigned int i=0; i<deg ; i++){
-			      int neigh = *(p.first+i);
-			      if(neigh < start || neigh > end)
-			          continue;
-			      int n_comm = n2c[neigh];
-			      if(n_comm != best_comm && insider[neigh] == -1){
-				  blocks[blockID]->push(neigh);
-				  insider[neigh] = blockID;
-			       }
-			}
-			nb_moves++;
-		}
-
-            }//end of for
-	    tCount++; 
-      }while(active > 0);
-
-  cerr << "number of rounds: " << tCount << endl;
-
-  if (nb_moves>0)
-      improvement=true;
   return improvement;
 }
 
