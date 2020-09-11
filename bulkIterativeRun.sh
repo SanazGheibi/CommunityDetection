@@ -3,7 +3,7 @@ path=$1  #path to current folder
 dpath=$2 #path to Louvain_input folder (datasets)
 cache=$3 #cache size in MBs
 #sample use: ./bulkIterativeRun.sh . ~ 4
-logFile="${path}/uk_bulkIterativeLog.txt"
+logFile="${path}/liveJournal_bulkIterativeLog.txt"
 echo -n "" > "$logFile"
 for name in liveJournal 
 do
