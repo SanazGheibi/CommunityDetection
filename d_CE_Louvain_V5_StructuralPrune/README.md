@@ -1,1 +1,3 @@
-The same as CE_Louvain_v5, with the differnce that the graph is initially pruned (in the community phase)
+The double precision version of CE_Louvain_V5_StructuralPrune. The single precision version caused overflows on very large input networks. 
+
+The compile and run instructions are the same as those of the orignial Louvian algorithm. Please refer to readme.txt
