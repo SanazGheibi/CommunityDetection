@@ -1,1 +1,3 @@
-place holder
+In the first level(s), the node traversal will follow the order imposed by the initial random shuffling of nodes. 
+After that, the graph is re-ordered and the traversal happens based on the new ordering.
+
