@@ -1,1 +1,3 @@
-From the Gorder papaer. No contributions from me. 
+Taken from https://github.com/datourat/Gorde.
+
+For instruction on running and compiling, please refer to README. 
