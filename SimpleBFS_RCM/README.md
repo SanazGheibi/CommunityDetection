@@ -1,1 +1,1 @@
-RCM preordering. Taken from Gorder (subfuctions of Gorder). 
+RCM preordering. Taken from Gorder (https://github.com/datourat/Gorde). 
