@@ -1,4 +1,4 @@
-From the usc paper. No contributions from me. 
+Taken from https://github.com/kartiklakhotia/graphReordering. No contributions by me. 
 
 Graph reordering work.
 pH -> optimizing for temporal locality
