@@ -1,1 +1,3 @@
-MoveFast Louvian + using mini sweeps and Adaptive BFS preordering
+The double precision version of CE_Louvain_V5. The single precision version caused overflows on very large input networks. 
+
+The compile and run instructions are the same as those of the orignial Louvian algorithm. Please refer to readme.txt
